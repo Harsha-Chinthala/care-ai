@@ -1,0 +1,19 @@
+data:
+  raw_path: "data/raw/"
+  processed_path: "data/processed/"
+  models_path: "data/models/"
+  
+model_params:
+  test_size: 0.2
+  random_state: 42
+  
+features:
+  academic: ["cgpa", "arrears_count", "subject_scores"]
+  demographic: ["region", "department", "gender"]
+  behavioral: ["internship_duration", "extracurricular_score"]
+  
+targets:
+  placement: "placement_status"
+  higher_studies: "higher_studies_choice"
+  entrepreneurship: "entrepreneurship_score"
+  

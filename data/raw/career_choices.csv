@@ -1,0 +1,51 @@
+student_id,placement_status,higher_studies_choice,career_preference,industry_preference
+1001,1,0,Software Engineer,Technology
+1002,0,1,Research Analyst,Academia
+1003,1,0,Data Scientist,Technology
+1004,0,0,Mechanical Engineer,Manufacturing
+1005,1,0,Software Developer,Technology
+1006,1,0,Electronics Engineer,Electronics
+1007,1,1,Product Manager,Technology
+1008,0,0,Civil Engineer,Construction
+1009,1,0,Machine Learning Engineer,Technology
+1010,0,1,Research Scientist,Academia
+1011,1,0,Full Stack Developer,Technology
+1012,0,0,Design Engineer,Manufacturing
+1013,1,0,Hardware Engineer,Electronics
+1014,0,1,Software Analyst,Technology
+1015,1,0,AI Engineer,Technology
+1016,0,0,Project Manager,Construction
+1017,1,0,Backend Developer,Technology
+1018,1,0,Systems Engineer,Electronics
+1019,1,1,Tech Lead,Technology
+1020,0,0,Production Engineer,Manufacturing
+1021,1,0,Embedded Engineer,Electronics
+1022,0,1,Data Analyst,Technology
+1023,1,0,Senior Developer,Technology
+1024,0,0,Site Engineer,Construction
+1025,1,0,DevOps Engineer,Technology
+1026,1,0,Test Engineer,Electronics
+1027,1,0,Solutions Architect,Technology
+1028,0,0,Quality Engineer,Manufacturing
+1029,1,0,Circuit Designer,Electronics
+1030,0,1,Software Tester,Technology
+1031,1,0,Tech Architect,Technology
+1032,0,0,Structural Engineer,Construction
+1033,1,0,Cloud Engineer,Technology
+1034,0,1,Systems Analyst,Electronics
+1035,1,0,Mobile Developer,Technology
+1036,0,0,Process Engineer,Manufacturing
+1037,1,0,RF Engineer,Electronics
+1038,0,1,Business Analyst,Technology
+1039,1,0,Platform Engineer,Technology
+1040,0,0,Construction Manager,Construction
+1041,1,0,Frontend Developer,Technology
+1042,1,0,Network Engineer,Electronics
+1043,1,1,Engineering Manager,Technology
+1044,0,0,Operations Manager,Manufacturing
+1045,1,0,Security Engineer,Technology
+1046,0,1,Technical Writer,Technology
+1047,1,0,Principal Engineer,Technology
+1048,0,0,Project Coordinator,Construction
+1049,1,0,Signal Processing Engineer,Electronics
+1050,0,1,Research Associate,Academia

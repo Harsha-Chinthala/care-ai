@@ -1,0 +1,51 @@
+student_id,cgpa,arrears_count,department,region,gender,subject_scores,internship_duration,extracurricular_score
+1001,8.5,0,Computer Science,South,Male,85,6,7
+1002,7.2,1,Electronics,North,Female,78,4,8
+1003,9.1,0,Computer Science,West,Male,92,8,9
+1004,6.8,2,Mechanical,East,Male,72,3,5
+1005,8.9,0,Computer Science,South,Female,88,7,8
+1006,7.5,1,Electronics,North,Male,80,5,6
+1007,8.2,0,Computer Science,West,Female,86,6,9
+1008,6.5,3,Civil,East,Male,68,2,4
+1009,9.3,0,Computer Science,South,Male,95,9,10
+1010,7.8,1,Electronics,North,Female,82,5,7
+1011,8.7,0,Computer Science,West,Male,89,7,8
+1012,6.9,2,Mechanical,East,Female,74,3,5
+1013,8.4,0,Electronics,South,Male,84,6,7
+1014,7.1,1,Computer Science,North,Female,79,4,6
+1015,9.0,0,Computer Science,West,Male,91,8,9
+1016,6.7,2,Civil,East,Male,70,2,4
+1017,8.6,0,Computer Science,South,Female,87,7,8
+1018,7.4,1,Electronics,North,Male,81,5,6
+1019,8.8,0,Computer Science,West,Female,90,8,9
+1020,6.6,3,Mechanical,East,Male,69,2,3
+1021,8.3,0,Electronics,South,Male,85,6,7
+1022,7.7,1,Computer Science,North,Female,83,5,8
+1023,9.2,0,Computer Science,West,Male,94,9,10
+1024,6.4,2,Civil,East,Female,67,2,4
+1025,8.1,0,Computer Science,South,Male,84,6,7
+1026,7.6,1,Electronics,North,Female,80,5,6
+1027,8.9,0,Computer Science,West,Male,91,8,9
+1028,6.8,2,Mechanical,East,Male,72,3,5
+1029,8.5,0,Electronics,South,Female,86,7,8
+1030,7.3,1,Computer Science,North,Male,78,4,6
+1031,9.4,0,Computer Science,West,Female,96,9,10
+1032,6.5,3,Civil,East,Male,68,2,3
+1033,8.7,0,Computer Science,South,Male,88,7,8
+1034,7.9,1,Electronics,North,Female,84,5,7
+1035,8.2,0,Computer Science,West,Male,85,6,8
+1036,6.9,2,Mechanical,East,Female,73,3,4
+1037,8.8,0,Electronics,South,Male,89,7,9
+1038,7.5,1,Computer Science,North,Female,81,5,6
+1039,9.1,0,Computer Science,West,Male,93,8,10
+1040,6.7,2,Civil,East,Male,71,2,4
+1041,8.4,0,Computer Science,South,Female,86,6,8
+1042,7.8,1,Electronics,North,Male,82,5,7
+1043,8.6,0,Computer Science,West,Female,88,7,9
+1044,6.6,3,Mechanical,East,Male,70,2,3
+1045,8.9,0,Computer Science,South,Male,90,8,9
+1046,7.2,1,Electronics,North,Female,79,4,6
+1047,9.3,0,Computer Science,West,Male,95,9,10
+1048,6.8,2,Civil,East,Female,72,3,4
+1049,8.1,0,Electronics,South,Male,83,6,7
+1050,7.7,1,Computer Science,North,Female,82,5,8

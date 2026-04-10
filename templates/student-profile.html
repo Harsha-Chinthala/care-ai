@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Profile - Care-AI</title>
+    <link rel="icon" type="image/png" href="../static/assets/logo.png">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .profile-shell {
+            padding: 2.5rem 0 4rem;
+            background:
+                radial-gradient(circle at top right, rgba(102, 126, 234, 0.18), transparent 28%),
+                radial-gradient(circle at top left, rgba(238, 90, 36, 0.12), transparent 22%),
+                #f5f7fb;
+        }
+
+        .profile-top {
+            display: grid;
+            grid-template-columns: 1.25fr 0.85fr;
+            gap: 1.5rem;
+            margin-bottom: 1.8rem;
+        }
+
+        .profile-hero,
+        .profile-sidekick,
+        .profile-form,
+        .results-section {
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 24px;
+            box-shadow: 0 18px 40px rgba(46, 62, 98, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            animation: profileRise 0.72s ease both;
+            transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+        }
+
+        .profile-sidekick:hover,
+        .profile-form:hover,
+        .results-section:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 22px 46px rgba(46, 62, 98, 0.12);
+            border-color: rgba(99, 102, 241, 0.18);
+        }
+
+        .profile-hero {
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.98), rgba(91, 65, 194, 0.92));
+            color: white;
+            animation: profileRise 0.72s ease both, heroFloatGlow 8s ease-in-out infinite;
+        }
+
+        .profile-hero h1 {
+            font-size: 2.3rem;
+            line-height: 1.1;
+            margin-bottom: 0.85rem;
+        }
+
+        .profile-hero p {
+            opacity: 0.92;
+            margin-bottom: 1.3rem;
+        }
+
+        .hero-badges {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.14);
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: transform 0.25s ease, background-color 0.25s ease;
+        }
+
+        .hero-badge:hover {
+            transform: translateY(-2px);
+            background: rgba(255,255,255,0.18);
+        }
+
+        .profile-sidekick {
+            padding: 1.5rem;
+        }
+
+        .profile-sidekick h2 {
+            font-size: 1.2rem;
+            color: #111827;
+            margin-bottom: 0.8rem;
+        }
+
+        .sidekick-list {
+            display: grid;
+            gap: 0.85rem;
+        }
+
+        .sidekick-item {
+            padding: 0.95rem 1rem;
+            border-radius: 18px;
+            background: #f8faff;
+        }
+
+        .sidekick-item h3 {
+            font-size: 0.98rem;
+            color: #111827;
+            margin-bottom: 0.2rem;
+        }
+
+        .sidekick-item p {
+            color: #667085;
+            font-size: 0.92rem;
+        }
+
+        .mode-banner {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1rem 1.15rem;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #fff7ed, #fef3c7);
+            color: #9a3412;
+            margin-bottom: 1rem;
+        }
+
+        .mode-banner.visible {
+            display: flex;
+        }
+
+        .mode-banner strong {
+            display: block;
+            margin-bottom: 0.15rem;
+        }
+
+        .secondary-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.7rem 1rem;
+            border-radius: 12px;
+            border: 1px solid #d8e0f0;
+            background: white;
+            color: #374151;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+
+        .secondary-btn:hover {
+            transform: translateY(-2px);
+            border-color: #c7d2fe;
+            box-shadow: 0 12px 24px rgba(79, 70, 229, 0.08);
+        }
+
+        .helper-card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .helper-card {
+            padding: 1rem;
+            border-radius: 18px;
+            background: #f8fafc;
+            border: 1px solid #ecf0f7;
+            animation: profileRise 0.78s ease both;
+            transition: transform 0.28s ease, box-shadow 0.28s ease;
+        }
+
+        .helper-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+        }
+
+        @keyframes profileRise {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes heroFloatGlow {
+            0%, 100% {
+                box-shadow: 0 18px 40px rgba(17, 24, 39, 0.14);
+            }
+            50% {
+                box-shadow: 0 24px 48px rgba(79, 70, 229, 0.18);
+            }
+        }
+
+        .helper-card h3 {
+            font-size: 1rem;
+            color: #111827;
+            margin-bottom: 0.3rem;
+        }
+
+        .helper-card p {
+            color: #667085;
+            font-size: 0.92rem;
+        }
+
+        @media (max-width: 980px) {
+            .profile-top,
+            .helper-card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Care-AI</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="student-dashboard.html" class="nav-link">Home</a></li>
+                <li><a href="student-profile.html" class="nav-link active">Profile</a></li>
+                <li><a href="student-login.html" class="nav-link" id="logoutLink">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content profile-shell">
+        <div class="container">
+            <section class="profile-top">
+                <div class="profile-hero">
+                    <h1 id="heroTitle"><i class="fas fa-user-graduate"></i> Shape your student profile</h1>
+                    <p id="heroSubtitle">Capture your latest academic progress, update your strengths, and keep your career guidance aligned with your current growth.</p>
+                    <div class="hero-badges">
+                        <div class="hero-badge"><i class="fas fa-database"></i><span>Saved per student account</span></div>
+                        <div class="hero-badge"><i class="fas fa-pen"></i><span>Edit older submissions anytime</span></div>
+                        <div class="hero-badge"><i class="fas fa-bolt"></i><span>Fresh prediction on every save</span></div>
+                    </div>
+                </div>
+
+                <div class="profile-sidekick">
+                    <h2>How students should use this</h2>
+                    <div class="sidekick-list">
+                        <div class="sidekick-item">
+                            <h3>Update after real progress</h3>
+                            <p>Add new internships, stronger aptitude scores, and improved skills when they actually change.</p>
+                        </div>
+                        <div class="sidekick-item">
+                            <h3>Save multiple versions</h3>
+                            <p>Each submission is stored per student, so your growth over time stays visible in the dashboard.</p>
+                        </div>
+                        <div class="sidekick-item">
+                            <h3>Edit with intent</h3>
+                            <p>Use edit mode when you want to refine an existing profile instead of creating a brand new version.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div id="editModeBanner" class="mode-banner">
+                <div>
+                    <strong>Editing a saved profile</strong>
+                    <span id="editModeText">You are updating a previous submission.</span>
+                </div>
+                <a href="student-profile.html" class="secondary-btn"><i class="fas fa-plus"></i> New Version Instead</a>
+            </div>
+
+            <div class="helper-card-grid">
+                <div class="helper-card">
+                    <h3>Personalized suggestions</h3>
+                    <p>Your dashboard will turn this input into career-specific guidance for placement, higher studies, or entrepreneurship.</p>
+                </div>
+                <div class="helper-card">
+                    <h3>Student-safe history</h3>
+                    <p>Each student only reads and edits their own records, so the experience scales cleanly to many users.</p>
+                </div>
+                <div class="helper-card">
+                    <h3>AI-ready workflow</h3>
+                    <p>The dashboard now includes a Copilot panel. If you want ChatGPT later, I can wire it into that same UI.</p>
+                </div>
+            </div>
+
+            <form id="studentForm" class="profile-form">
+                <div class="form-sections">
+                    <div class="form-section">
+                        <h2><i class="fas fa-user"></i> Personal Information</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="student_name">Full Name</label>
+                                <input type="text" id="student_name" name="student_name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="department">Department</label>
+                                <select id="department" name="department" required>
+                                    <option value="">Select Department</option>
+                                    <option value="1">Computer Science</option>
+                                    <option value="2">Electronics</option>
+                                    <option value="3">Mechanical</option>
+                                    <option value="4">Civil</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="region">Region</label>
+                                <select id="region" name="region" required>
+                                    <option value="">Select Region</option>
+                                    <option value="1">North</option>
+                                    <option value="2">South</option>
+                                    <option value="3">East</option>
+                                    <option value="4">West</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <select id="gender" name="gender" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="0">Male</option>
+                                    <option value="1">Female</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2><i class="fas fa-book"></i> Academic Information</h2>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="cgpa">CGPA (0-10)</label>
+                                <input type="number" id="cgpa" name="cgpa" min="0" max="10" step="0.1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="arrears_count">Number of Arrears</label>
+                                <input type="number" id="arrears_count" name="arrears_count" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="internship_duration">Internship Duration (months)</label>
+                                <input type="number" id="internship_duration" name="internship_duration" min="0" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="aptitude_score">Aptitude Score (0-100)</label>
+                                <input type="number" id="aptitude_score" name="aptitude_score" min="0" max="100" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h2><i class="fas fa-cogs"></i> Skills Assessment</h2>
+                        <p class="section-description">Rate your skills on a scale of 1 to 10.</p>
+
+                        <div class="skills-category">
+                            <h3>Technical Skills</h3>
+                            <div class="skills-grid">
+                                <div class="skill-item"><label for="programming">Programming</label><input type="range" id="programming" name="programming" min="1" max="10" value="5"><span class="skill-value">5</span></div>
+                                <div class="skill-item"><label for="problem_solving">Problem Solving</label><input type="range" id="problem_solving" name="problem_solving" min="1" max="10" value="5"><span class="skill-value">5</span></div>
+                                <div class="skill-item"><label for="analytical_thinking">Analytical Thinking</label><input type="range" id="analytical_thinking" name="analytical_thinking" min="1" max="10" value="5"><span class="skill-value">5</span></div>
+                                <div class="skill-item"><label for="subject_knowledge">Subject Knowledge</label><input type="range" id="subject_knowledge" name="subject_knowledge" min="1" max="10" value="5"><span class="skill-value">5</span></div>
+                            </div>
+                        </div>
+
+                        <div class="skills-category">
+                            <h3>Soft Skills</h3>
+                            <div class="skills-grid">
+                                <div class="skill-item"><label for="communication">Communication</label><input type="range" id="communication" name="communication" min="1" max="10" value="5"><span class="skill-value">5</span></div>
+                                <div class="skill-item"><label for="teamwork">Teamwork</label><input type="range" id="teamwork" name="teamwork" min="1" max="10" value="5"><span class="skill-value">5</span></div>
+                                <div class="skill-item"><label for="leadership">Leadership</label><input type="range" id="leadership" name="leadership" min="1" max="10" value="5"><span class="skill-value">5</span></div>
+                                <div class="skill-item"><label for="networking">Networking</label><input type="range" id="networking" name="networking" min="1" max="10" value="5"><span class="skill-value">5</span></div>
+                            </div>
+                        </div>
+
+                        <div class="skills-category">
+                            <h3>Research & Innovation</h3>
+                            <div class="skills-grid">
+                                <div class="skill-item"><label for="research">Research</label><input type="range" id="research" name="research" min="1" max="10" value="5"><span class="skill-value">5</span></div>
+                                <div class="skill-item"><label for="writing">Writing</label><input type="range" id="writing" name="writing" min="1" max="10" value="5"><span class="skill-value">5</span></div>
+                                <div class="skill-item"><label for="innovation">Innovation</label><input type="range" id="innovation" name="innovation" min="1" max="10" value="5"><span class="skill-value">5</span></div>
+                                <div class="skill-item"><label for="risk_management">Risk Management</label><input type="range" id="risk_management" name="risk_management" min="1" max="10" value="5"><span class="skill-value">5</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-large" id="submitBtn">
+                        <i class="fas fa-magic"></i>
+                        Save and Predict
+                    </button>
+                </div>
+            </form>
+
+            <div id="results" class="results-section" style="display: none;">
+                <h2><i class="fas fa-chart-bar"></i> Latest Prediction</h2>
+                <div id="resultsContent"></div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBoV-z8VnbVcsMRkLuwhsuOUd88aXVp7Hw",
+            authDomain: "careai-b88db.firebaseapp.com",
+            projectId: "careai-b88db",
+            storageBucket: "careai-b88db.firebasestorage.app",
+            messagingSenderId: "190414171649",
+            appId: "1:190414171649:web:6a2925fe1364697c5f5a00"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const params = new URLSearchParams(window.location.search);
+        const editingRecordId = params.get('edit');
+
+        let currentUser = null;
+        let editingRecord = null;
+
+        document.querySelectorAll('input[type="range"]').forEach((slider) => {
+            slider.addEventListener('input', function () {
+                this.nextElementSibling.textContent = this.value;
+            });
+        });
+
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'student-login.html';
+                return;
+            }
+
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            const role = userDoc.exists ? userDoc.data().role : '';
+            if (role !== 'student') {
+                await auth.signOut();
+                window.location.href = 'student-login.html';
+                return;
+            }
+
+            currentUser = user;
+            const storedName = userDoc.exists ? (userDoc.data().name || '') : '';
+            if (storedName) {
+                document.getElementById('student_name').value = storedName;
+            }
+
+            if (editingRecordId) {
+                await loadEditableRecord(editingRecordId, user.uid);
+            }
+        });
+
+        document.getElementById('logoutLink').addEventListener('click', async (event) => {
+            event.preventDefault();
+            await auth.signOut();
+            window.location.href = 'student-login.html';
+        });
+
+        document.getElementById('studentForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            if (!currentUser) {
+                alert('Please log in first.');
+                return;
+            }
+
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = editingRecord ? '<i class="fas fa-spinner fa-spin"></i> Updating...' : '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+            try {
+                const idToken = await currentUser.getIdToken(true);
+                const response = await fetch('http://127.0.0.1:5000/api/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${idToken}`
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                if (!response.ok || !result.success) {
+                    throw new Error(result.error || 'Prediction failed.');
+                }
+
+                const payload = {
+                    uid: currentUser.uid,
+                    email: currentUser.email || '',
+                    role: 'student',
+                    student_name: data.student_name,
+                    department: data.department,
+                    region: data.region,
+                    gender: data.gender,
+                    cgpa: Number(data.cgpa),
+                    arrears_count: Number(data.arrears_count),
+                    internship_duration: Number(data.internship_duration),
+                    aptitude_score: Number(data.aptitude_score),
+                    skills: {
+                        programming: Number(data.programming),
+                        communication: Number(data.communication),
+                        problem_solving: Number(data.problem_solving),
+                        teamwork: Number(data.teamwork),
+                        research: Number(data.research),
+                        analytical_thinking: Number(data.analytical_thinking),
+                        writing: Number(data.writing),
+                        subject_knowledge: Number(data.subject_knowledge),
+                        leadership: Number(data.leadership),
+                        innovation: Number(data.innovation),
+                        risk_management: Number(data.risk_management),
+                        networking: Number(data.networking)
+                    },
+                    prediction: {
+                        placement_probability: result.predictions.placement_probability,
+                        higher_studies_probability: result.predictions.higher_studies_probability,
+                        entrepreneurship_score: result.predictions.entrepreneurship_score,
+                        most_likely_path: result.most_likely_path,
+                        skill_gaps: result.skill_gaps,
+                        recommendations: result.recommendations
+                    },
+                    createdAt: editingRecord && editingRecord.createdAt
+                        ? editingRecord.createdAt
+                        : firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                if (editingRecord) {
+                    await db.collection('student_predictions').doc(editingRecord.id).set(payload, { merge: true });
+                } else {
+                    await db.collection('student_predictions').add(payload);
+                }
+
+                await db.collection('students').doc(currentUser.uid).set({
+                    name: data.student_name,
+                    email: currentUser.email || '',
+                    cgpa: Number(data.cgpa),
+                    arrears_count: Number(data.arrears_count),
+                    aptitude_score: Number(data.aptitude_score),
+                    internship_duration: Number(data.internship_duration),
+                    skills: {
+                        programming: Number(data.programming),
+                        communication: Number(data.communication),
+                        problem_solving: Number(data.problem_solving)
+                    },
+                    prediction: {
+                        career: mapCareer(result.most_likely_path, result.predictions),
+                        placement_probability: result.predictions.placement_probability,
+                        higher_studies_probability: result.predictions.higher_studies_probability
+                    },
+                    createdAt: editingRecord && editingRecord.createdAt
+                        ? editingRecord.createdAt
+                        : firebase.firestore.FieldValue.serverTimestamp(),
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+
+                await db.collection('users').doc(currentUser.uid).set({
+                    name: data.student_name,
+                    email: currentUser.email || '',
+                    role: 'student',
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+
+                displayResults(result);
+                setTimeout(() => {
+                    window.location.href = 'student-dashboard.html';
+                }, 1400);
+            } catch (error) {
+                alert(error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }
+        });
+
+        async function loadEditableRecord(recordId, uid) {
+            try {
+                const doc = await db.collection('student_predictions').doc(recordId).get();
+                if (!doc.exists) return;
+
+                const data = doc.data();
+                if (data.uid !== uid) {
+                    alert('You can only edit your own saved profile.');
+                    window.location.href = 'student-dashboard.html';
+                    return;
+                }
+
+                editingRecord = { id: doc.id, ...data };
+                applyRecordToForm(editingRecord);
+                setEditMode(editingRecord);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function applyRecordToForm(record) {
+            const fields = ['student_name', 'department', 'region', 'gender', 'cgpa', 'arrears_count', 'internship_duration', 'aptitude_score'];
+            fields.forEach((field) => {
+                const element = document.getElementById(field);
+                if (element && record[field] !== undefined) {
+                    element.value = record[field];
+                }
+            });
+
+            Object.entries(record.skills || {}).forEach(([skill, value]) => {
+                const slider = document.getElementById(skill);
+                if (slider) {
+                    slider.value = value;
+                    slider.nextElementSibling.textContent = value;
+                }
+            });
+        }
+
+        function setEditMode(record) {
+            document.getElementById('heroTitle').innerHTML = '<i class="fas fa-pen-to-square"></i> Edit your saved profile';
+            document.getElementById('heroSubtitle').textContent = 'Refine this saved submission and regenerate recommendations using your improved details.';
+            document.getElementById('submitBtn').innerHTML = '<i class="fas fa-rotate"></i> Update and Predict';
+            document.getElementById('editModeText').textContent = `You are updating the version saved ${formatRelativeTime(record.createdAt)}.`;
+            document.getElementById('editModeBanner').classList.add('visible');
+        }
+
+        function displayResults(result) {
+            const resultsSection = document.getElementById('results');
+            const resultsContent = document.getElementById('resultsContent');
+            const predictions = result.predictions;
+
+            resultsContent.innerHTML = `
+                <div class="prediction-summary">
+                    <h3>Hello ${result.student_name}!</h3>
+                    <p class="most-likely-path">Most likely path: <strong>${formatLabel(result.most_likely_path)}</strong></p>
+                    <p style="margin-top: 0.8rem;">${getCareerSummary(result.most_likely_path)}</p>
+                </div>
+                <div class="predictions-grid">
+                    <div class="prediction-card">
+                        <h4><i class="fas fa-briefcase"></i> Placement</h4>
+                        <div class="probability-bar"><div class="probability-fill" style="width: ${predictions.placement_probability * 100}%"></div></div>
+                        <span class="probability-text">${(predictions.placement_probability * 100).toFixed(1)}%</span>
+                    </div>
+                    <div class="prediction-card">
+                        <h4><i class="fas fa-university"></i> Higher Studies</h4>
+                        <div class="probability-bar"><div class="probability-fill" style="width: ${predictions.higher_studies_probability * 100}%"></div></div>
+                        <span class="probability-text">${(predictions.higher_studies_probability * 100).toFixed(1)}%</span>
+                    </div>
+                    <div class="prediction-card">
+                        <h4><i class="fas fa-rocket"></i> Entrepreneurship</h4>
+                        <div class="probability-bar"><div class="probability-fill" style="width: ${predictions.entrepreneurship_score * 10}%"></div></div>
+                        <span class="probability-text">${(predictions.entrepreneurship_score * 10).toFixed(1)}%</span>
+                    </div>
+                </div>
+            `;
+
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function formatLabel(value) {
+            return String(value || '').replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+        }
+
+        function getCareerSummary(path) {
+            return {
+                placement: 'Your profile currently supports an industry-focused path. Continue sharpening execution, communication, and placement readiness.',
+                higher_studies: 'Your profile currently supports an academic-growth path. Keep building research depth and application readiness.',
+                entrepreneurship: 'Your profile currently supports an innovation-led path. Focus on leadership, validation, and risk-handling skills.',
+                needs_training: 'Your current profile needs stronger fundamentals first. Focus on core skills and academic stability before specializing.'
+            }[path] || 'Your saved profile has been updated successfully.';
+        }
+
+        function mapCareer(path, predictions) {
+            if (path === 'placement' && Number(predictions?.placement_probability) >= 0.55) return 'placement';
+            if (path === 'higher_studies' && Number(predictions?.higher_studies_probability) >= 0.55) return 'higher_studies';
+            return 'needs_training';
+        }
+
+        function getTimestamp(value) {
+            if (!value) return 0;
+            if (typeof value.toMillis === 'function') return value.toMillis();
+            if (typeof value.seconds === 'number') return value.seconds * 1000;
+            return 0;
+        }
+
+        function formatRelativeTime(timestamp) {
+            const value = getTimestamp(timestamp);
+            if (!value) return 'just now';
+
+            const diffMinutes = Math.round((Date.now() - value) / 60000);
+            if (diffMinutes < 1) return 'just now';
+            if (diffMinutes < 60) return `${diffMinutes} min ago`;
+            const diffHours = Math.round(diffMinutes / 60);
+            if (diffHours < 24) return `${diffHours} hr ago`;
+            const diffDays = Math.round(diffHours / 24);
+            return `${diffDays} day${diffDays === 1 ? '' : 's'} ago`;
+        }
+    </script>
+</body>
+</html>

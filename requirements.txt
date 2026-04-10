@@ -1,0 +1,13 @@
+flask
+flask-cors
+firebase-admin
+pandas
+numpy
+scikit-learn
+matplotlib
+seaborn
+plotly
+joblib
+python-dotenv
+pyyaml
+openai

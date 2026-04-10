@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Care-AI Admin Dashboard</title>
+    <link rel="icon" type="image/png" href="../static/assets/logo.png">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --admin-bg: #f4f7fb;
+            --admin-card: rgba(255, 255, 255, 0.92);
+            --admin-border: rgba(148, 163, 184, 0.18);
+            --admin-text: #14213d;
+            --admin-muted: #64748b;
+            --admin-primary: #2563eb;
+            --admin-success: #16a34a;
+            --admin-warning: #ea580c;
+            --admin-danger: #dc2626;
+        }
+
+        body {
+            background:
+                radial-gradient(circle at top right, rgba(37, 99, 235, 0.14), transparent 24%),
+                radial-gradient(circle at top left, rgba(22, 163, 74, 0.10), transparent 18%),
+                var(--admin-bg);
+            color: var(--admin-text);
+        }
+
+        .admin-shell {
+            padding: 2.25rem 0 4rem;
+        }
+
+        .admin-hero {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.6rem;
+        }
+
+        .hero-panel,
+        .hero-side,
+        .admin-panel,
+        .summary-card,
+        .segment-card {
+            background: var(--admin-card);
+            border: 1px solid var(--admin-border);
+            border-radius: 24px;
+            box-shadow: 0 18px 38px rgba(15, 23, 42, 0.08);
+            backdrop-filter: blur(10px);
+            animation: adminRise 0.72s ease both;
+            transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+        }
+
+        .hero-side:hover,
+        .admin-panel:hover,
+        .summary-card:hover,
+        .segment-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 22px 44px rgba(15, 23, 42, 0.11);
+            border-color: rgba(37, 99, 235, 0.18);
+        }
+
+        .hero-panel {
+            padding: 2rem;
+            background:
+                linear-gradient(135deg, rgba(20, 33, 61, 0.98), rgba(37, 99, 235, 0.92)),
+                #14213d;
+            color: white;
+            overflow: hidden;
+            position: relative;
+            animation: adminRise 0.72s ease both, adminGlow 8s ease-in-out infinite;
+        }
+
+        .hero-panel::after {
+            content: "";
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            right: -50px;
+            bottom: -90px;
+        }
+
+        .hero-panel h1 {
+            font-size: 2.4rem;
+            line-height: 1.1;
+            margin-bottom: 0.8rem;
+        }
+
+        .hero-panel p {
+            max-width: 44rem;
+            opacity: 0.9;
+            margin-bottom: 1.2rem;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: transform 0.24s ease, background-color 0.24s ease;
+        }
+
+        .hero-pill:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.18);
+        }
+
+        .hero-side {
+            padding: 1.4rem;
+        }
+
+        .hero-side h2 {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .status-list {
+            display: grid;
+            gap: 0.85rem;
+        }
+
+        .status-item {
+            padding: 1rem;
+            border-radius: 18px;
+            background: #f8fafc;
+        }
+
+        .status-item strong {
+            display: block;
+            margin-bottom: 0.15rem;
+        }
+
+        .status-item span {
+            color: var(--admin-muted);
+            font-size: 0.92rem;
+        }
+
+        .summary-grid,
+        .segment-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .segment-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .summary-card,
+        .segment-card {
+            padding: 1.25rem;
+        }
+
+        .summary-card .label,
+        .segment-card .label {
+            color: var(--admin-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0.45rem;
+        }
+
+        .summary-card h3,
+        .segment-card h3 {
+            font-size: 2rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .summary-card p,
+        .segment-card p {
+            color: var(--admin-muted);
+            font-size: 0.9rem;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-panel {
+            padding: 1.5rem;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .panel-header h2 {
+            font-size: 1.25rem;
+        }
+
+        .panel-muted {
+            color: var(--admin-muted);
+            font-size: 0.92rem;
+        }
+
+        .alert-list,
+        .segment-list {
+            display: grid;
+            gap: 0.85rem;
+        }
+
+        .alert-item,
+        .segment-item {
+            padding: 1rem 1.05rem;
+            border-radius: 18px;
+            background: #f8fafc;
+            border: 1px solid #eef2f7;
+            transition: transform 0.26s ease, box-shadow 0.26s ease;
+        }
+
+        .alert-item:hover,
+        .segment-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 28px rgba(15, 23, 42, 0.06);
+        }
+
+        .alert-item {
+            border-left: 4px solid var(--admin-danger);
+        }
+
+        .alert-item h3,
+        .segment-item h3 {
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        @keyframes adminRise {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes adminGlow {
+            0%, 100% {
+                box-shadow: 0 18px 38px rgba(15, 23, 42, 0.1);
+            }
+            50% {
+                box-shadow: 0 24px 48px rgba(37, 99, 235, 0.16);
+            }
+        }
+
+        .alert-item p,
+        .segment-item p {
+            color: var(--admin-muted);
+            font-size: 0.92rem;
+        }
+
+        .analytics-stack {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .analytics-item {
+            display: grid;
+            gap: 0.45rem;
+        }
+
+        .analytics-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+
+        .analytics-track {
+            height: 12px;
+            border-radius: 999px;
+            overflow: hidden;
+            background: #e5e7eb;
+        }
+
+        .analytics-fill {
+            height: 100%;
+            border-radius: inherit;
+        }
+
+        .analytics-fill.placement {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+        }
+
+        .analytics-fill.higher-studies {
+            background: linear-gradient(135deg, #2563eb, #6366f1);
+        }
+
+        .filter-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-group {
+            display: grid;
+            gap: 0.35rem;
+            min-width: 180px;
+        }
+
+        .filter-group label {
+            font-size: 0.86rem;
+            color: var(--admin-muted);
+            font-weight: 600;
+        }
+
+        .filter-group select {
+            padding: 0.8rem 0.9rem;
+            border-radius: 14px;
+            border: 1px solid #dbe3ef;
+            background: white;
+            font: inherit;
+            color: var(--admin-text);
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 940px;
+        }
+
+        th,
+        td {
+            padding: 0.95rem 0.85rem;
+            text-align: left;
+            border-bottom: 1px solid #edf2f7;
+            vertical-align: top;
+        }
+
+        th {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--admin-muted);
+        }
+
+        td {
+            font-size: 0.95rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.7rem;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .badge.segment-high {
+            color: #854d0e;
+            background: #fef3c7;
+        }
+
+        .badge.segment-ready {
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        .badge.segment-risk {
+            color: #991b1b;
+            background: #fee2e2;
+        }
+
+        .badge.prediction-placement {
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        .badge.prediction-higher {
+            color: #1d4ed8;
+            background: #dbeafe;
+        }
+
+        .badge.prediction-training {
+            color: #9a3412;
+            background: #ffedd5;
+        }
+
+        .badge.risk-yes {
+            color: #991b1b;
+            background: #fee2e2;
+        }
+
+        .badge.risk-no {
+            color: #166534;
+            background: #dcfce7;
+        }
+
+        .empty-state {
+            padding: 2rem 1rem;
+            text-align: center;
+            color: var(--admin-muted);
+        }
+
+        @media (max-width: 1100px) {
+            .admin-hero,
+            .admin-grid,
+            .summary-grid,
+            .segment-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Care-AI Admin</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="admin-dashboard.html" class="nav-link active">Admin Dashboard</a></li>
+                <li><a href="admin-login.html" class="nav-link" id="logoutLink">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content admin-shell">
+        <div class="container">
+            <section class="admin-hero">
+                <div class="hero-panel">
+                    <h1>Admin Command Center</h1>
+                    <p>Monitor student outcomes, segment cohorts intelligently, catch risk signals early, and watch the dashboard update live as Firestore changes.</p>
+                    <div class="hero-meta">
+                        <div class="hero-pill"><i class="fas fa-satellite-dish"></i><span>Realtime Firestore Sync</span></div>
+                        <div class="hero-pill"><i class="fas fa-shield-check"></i><span>Admin-only access</span></div>
+                        <div class="hero-pill"><i class="fas fa-layer-group"></i><span>Student segmentation</span></div>
+                    </div>
+                </div>
+
+                <div class="hero-side">
+                    <h2>Live status</h2>
+                    <div class="status-list">
+                        <div class="status-item">
+                            <strong id="connectionStatus">Connecting...</strong>
+                            <span>Firestore stream status</span>
+                        </div>
+                        <div class="status-item">
+                            <strong id="lastUpdated">Waiting for data</strong>
+                            <span>Last dashboard refresh</span>
+                        </div>
+                        <div class="status-item">
+                            <strong id="adminIdentity">Checking admin account</strong>
+                            <span>Authenticated Firebase admin user</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="summary-grid">
+                <article class="summary-card">
+                    <div class="label">Total Students</div>
+                    <h3 id="totalStudents">0</h3>
+                    <p>All student documents in Firestore</p>
+                </article>
+                <article class="summary-card">
+                    <div class="label">Placement Count</div>
+                    <h3 id="placementCount">0</h3>
+                    <p>Prediction career = placement</p>
+                </article>
+                <article class="summary-card">
+                    <div class="label">Higher Studies Count</div>
+                    <h3 id="higherStudiesCount">0</h3>
+                    <p>Prediction career = higher studies</p>
+                </article>
+                <article class="summary-card">
+                    <div class="label">High-Risk Students</div>
+                    <h3 id="highRiskCount">0</h3>
+                    <p>Low CGPA, low aptitude, or too many arrears</p>
+                </article>
+                <article class="summary-card">
+                    <div class="label">Average CGPA</div>
+                    <h3 id="averageCgpa">0.0</h3>
+                    <p>Across all students</p>
+                </article>
+            </section>
+
+            <section class="segment-grid">
+                <article class="segment-card">
+                    <div class="label">High Potential</div>
+                    <h3 id="segmentHighPotential">0</h3>
+                    <p>CGPA above 8, but programming still needs support</p>
+                </article>
+                <article class="segment-card">
+                    <div class="label">Placement Ready</div>
+                    <h3 id="segmentPlacementReady">0</h3>
+                    <p>Solid CGPA plus stronger programming readiness</p>
+                </article>
+                <article class="segment-card">
+                    <div class="label">High Risk</div>
+                    <h3 id="segmentHighRisk">0</h3>
+                    <p>Students needing immediate intervention</p>
+                </article>
+            </section>
+
+            <section class="admin-grid">
+                <section class="admin-panel">
+                    <div class="panel-header">
+                        <h2>⚠️ Students Needing Attention</h2>
+                        <span class="panel-muted" id="attentionCountLabel">0 students flagged</span>
+                    </div>
+                    <div id="riskAlerts" class="alert-list">
+                        <div class="empty-state">Risk alerts will appear here when matching students are found.</div>
+                    </div>
+                </section>
+
+                <section class="admin-panel">
+                    <div class="panel-header">
+                        <h2>Basic Analytics</h2>
+                        <span class="panel-muted">Prediction distribution</span>
+                    </div>
+                    <div id="analyticsSummary" class="analytics-stack">
+                        <div class="analytics-item">
+                            <div class="analytics-head"><span>Placement</span><strong id="placementAnalyticsLabel">0</strong></div>
+                            <div class="analytics-track"><div id="placementAnalyticsBar" class="analytics-fill placement" style="width: 0%"></div></div>
+                        </div>
+                        <div class="analytics-item">
+                            <div class="analytics-head"><span>Higher Studies</span><strong id="higherStudiesAnalyticsLabel">0</strong></div>
+                            <div class="analytics-track"><div id="higherStudiesAnalyticsBar" class="analytics-fill higher-studies" style="width: 0%"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="panel-header" style="margin-top: 1.4rem;">
+                        <h2>Segmentation Snapshot</h2>
+                        <span class="panel-muted">Auto-classified student groups</span>
+                    </div>
+                    <div id="segmentBreakdown" class="segment-list">
+                        <div class="empty-state">Segmentation details will appear here.</div>
+                    </div>
+                </section>
+            </section>
+
+            <section class="admin-panel">
+                <div class="panel-header">
+                    <h2>Student Table</h2>
+                    <span class="panel-muted">Filter by segment and prediction in real time</span>
+                </div>
+
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <label for="segmentFilter">Filter by Segment</label>
+                        <select id="segmentFilter">
+                            <option value="all">All Segments</option>
+                            <option value="high_potential">High Potential</option>
+                            <option value="placement_ready">Placement Ready</option>
+                            <option value="high_risk">High Risk</option>
+                            <option value="general">General</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="predictionFilter">Filter by Prediction</label>
+                        <select id="predictionFilter">
+                            <option value="all">All Predictions</option>
+                            <option value="placement">Placement</option>
+                            <option value="higher_studies">Higher Studies</option>
+                            <option value="needs_training">Needs Training</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>CGPA</th>
+                                <th>Prediction</th>
+                                <th>Segment</th>
+                                <th>Risk</th>
+                                <th>Aptitude</th>
+                                <th>Arrears</th>
+                                <th>Internship</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTableBody">
+                            <tr>
+                                <td colspan="9" class="empty-state">Loading students...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script type="module" src="../static/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Register - Care-AI</title>
+    <link rel="icon" type="image/png" href="../static/assets/logo.png">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background:
+                linear-gradient(rgba(10, 17, 32, 0.56), rgba(10, 17, 32, 0.56)),
+                url("../static/assets/veltech.jpg") no-repeat center center / cover;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.14), transparent 24%),
+                radial-gradient(circle at 84% 16%, rgba(74, 158, 255, 0.18), transparent 18%);
+            animation: driftGlow 15s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+        .wrapper {
+            width: 430px;
+            background: rgba(0, 0, 0, 0.72);
+            color: #fff;
+            padding: 32px 36px;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+            animation: authLift 0.82s ease;
+            transition: transform 0.35s ease, box-shadow 0.35s ease;
+            position: relative;
+            z-index: 1;
+        }
+        .wrapper:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+        }
+        h1 { text-align: center; margin-bottom: 12px; }
+        p.subtitle { text-align: center; margin-bottom: 18px; opacity: 0.86; }
+        .input-box { position: relative; margin: 16px 0; }
+        .input-box input {
+            width: 100%;
+            padding: 14px 44px 14px 16px;
+            border: 2px solid rgba(255,255,255,0.18);
+            background: transparent;
+            border-radius: 999px;
+            color: #fff;
+            outline: none;
+            transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+        }
+        .input-box input:focus {
+            border-color: rgba(255,255,255,0.42);
+            background: rgba(255,255,255,0.04);
+            transform: translateY(-1px);
+        }
+        .input-box i {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+        .button-nomad {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: 1px solid #ff6b6b;
+            background: #ff6b6b;
+            color: #fff;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.25s ease, background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .button-nomad:hover { background: transparent; color: #ff6b6b; transform: translateY(-2px); box-shadow: 0 12px 24px rgba(255, 107, 107, 0.18); }
+        .button-nomad:disabled { opacity: 0.65; cursor: not-allowed; }
+        .error, .success { min-height: 20px; margin-top: 10px; font-size: 0.92rem; }
+        .error { color: #ff8b8b; }
+        .success { color: #8dffb2; }
+        .notice {
+            margin-top: 14px;
+            padding: 12px;
+            border-radius: 10px;
+            background: rgba(74, 158, 255, 0.12);
+            border: 1px solid #4a9eff;
+            font-size: 0.92rem;
+            display: none;
+        }
+        .links { margin-top: 16px; text-align: center; }
+        .links a { color: #fff; text-decoration: none; }
+        .links a:hover { text-decoration: underline; }
+        .brand {
+            display: grid;
+            justify-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        .brand img {
+            width: 94px;
+            height: 94px;
+            object-fit: contain;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.94);
+            padding: 6px;
+            box-shadow: 0 10px 24px rgba(0,0,0,0.25);
+            animation: logoFloat 5.4s ease-in-out infinite;
+        }
+        @keyframes authLift {
+            from { opacity: 0; transform: translateY(18px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        @keyframes driftGlow {
+            from { transform: translate3d(0, 0, 0) scale(1); opacity: 0.88; }
+            to { transform: translate3d(0, -12px, 0) scale(1.04); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="brand">
+            <img src="../static/assets/logo.png" alt="Vel Tech Logo">
+        </div>
+        <h1>Student Registration</h1>
+        <p class="subtitle">Create a verified student account.</p>
+
+        <div class="input-box">
+            <input type="text" id="name" placeholder="Full name">
+            <i class='bx bxs-id-card'></i>
+        </div>
+        <div class="input-box">
+            <input type="email" id="email" placeholder="College Email" autocomplete="email" required>
+            <i class='bx bxs-envelope'></i>
+        </div>
+        <div class="input-box">
+            <input type="password" id="password" placeholder="Password (6+ chars)" autocomplete="new-password" required>
+            <i class='bx bxs-lock-alt' id="togglePassword"></i>
+        </div>
+
+        <button id="signupBtn" class="button-nomad">Sign Up</button>
+        <div id="signupMsg" class="error"></div>
+        <div id="notice" class="notice"></div>
+
+        <div class="links">
+            <a href="student-login.html">Already have an account? Login</a>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBoV-z8VnbVcsMRkLuwhsuOUd88aXVp7Hw",
+            authDomain: "careai-b88db.firebaseapp.com",
+            projectId: "careai-b88db",
+            storageBucket: "careai-b88db.firebasestorage.app",
+            messagingSenderId: "190414171649",
+            appId: "1:190414171649:web:6a2925fe1364697c5f5a00"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const signupBtn = document.getElementById('signupBtn');
+        const signupMsg = document.getElementById('signupMsg');
+        const notice = document.getElementById('notice');
+        const togglePassword = document.getElementById('togglePassword');
+        const allowedDomain = /@veltech\.edu\.in$/i;
+
+        togglePassword.addEventListener('click', () => {
+            passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
+        });
+
+        signupBtn.addEventListener('click', async () => {
+            signupMsg.textContent = '';
+            notice.style.display = 'none';
+
+            const name = String(nameInput.value || '').trim();
+            const email = String(emailInput.value || '').trim();
+            const password = String(passwordInput.value || '');
+
+            if (!email || !password) {
+                signupMsg.textContent = 'Please enter email and password.';
+                return;
+            }
+
+            if (!allowedDomain.test(email)) {
+                signupMsg.textContent = 'Use your @veltech.edu.in email.';
+                return;
+            }
+
+            if (password.length < 6) {
+                signupMsg.textContent = 'Password must be at least 6 characters.';
+                return;
+            }
+
+            signupBtn.disabled = true;
+            signupBtn.textContent = 'Creating account...';
+
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                await db.collection('users').doc(userCredential.user.uid).set({
+                    name: name,
+                    email: email,
+                    role: 'student',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                }, { merge: true });
+
+                await userCredential.user.sendEmailVerification();
+
+                signupMsg.className = 'success';
+                signupMsg.textContent = 'Account created successfully.';
+                notice.style.display = 'block';
+                notice.textContent = 'Verification email sent. Please verify before logging in.';
+                await auth.signOut();
+            } catch (error) {
+                signupMsg.className = 'error';
+                signupMsg.textContent = error.message || 'Registration failed.';
+            } finally {
+                signupBtn.disabled = false;
+                signupBtn.textContent = 'Sign Up';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Care-AI</title>
+    <link rel="icon" type="image/png" href="../static/assets/logo.png">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .student-home {
+            padding: 2.5rem 0 4rem;
+            background:
+                radial-gradient(circle at top right, rgba(102, 126, 234, 0.18), transparent 30%),
+                radial-gradient(circle at top left, rgba(238, 90, 36, 0.14), transparent 25%),
+                #f5f7fb;
+        }
+
+        .student-hero {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .hero-card,
+        .glass-card,
+        .timeline-card,
+        .insight-card-modern,
+        .prediction-card-modern,
+        .records-card,
+        .assistant-panel {
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 24px;
+            box-shadow: 0 18px 40px rgba(46, 62, 98, 0.10);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            animation: panelRise 0.72s ease both;
+            transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+        }
+
+        .glass-card:hover,
+        .timeline-card:hover,
+        .insight-card-modern:hover,
+        .prediction-card-modern:hover,
+        .records-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 22px 46px rgba(46, 62, 98, 0.12);
+            border-color: rgba(99, 102, 241, 0.18);
+        }
+
+        .hero-card {
+            padding: 2rem;
+            background:
+                linear-gradient(135deg, rgba(102, 126, 234, 0.96), rgba(91, 65, 194, 0.92)),
+                #667eea;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            animation: panelRise 0.72s ease both, heroGlow 8s ease-in-out infinite;
+        }
+
+        .hero-card::after {
+            content: "";
+            position: absolute;
+            inset: auto -50px -70px auto;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.92rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            opacity: 0.9;
+            margin-bottom: 0.75rem;
+        }
+
+        .hero-card h1 {
+            font-size: 2.4rem;
+            line-height: 1.1;
+            margin-bottom: 0.85rem;
+        }
+
+        .hero-card p {
+            max-width: 44rem;
+            font-size: 1rem;
+            opacity: 0.92;
+            margin-bottom: 1.4rem;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-actions .btn-secondary {
+            background: rgba(255, 255, 255, 0.14);
+            border-color: rgba(255, 255, 255, 0.24);
+        }
+
+        .glass-card {
+            padding: 1.5rem;
+        }
+
+        .profile-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.45rem 0.8rem;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #4f46e5;
+            font-size: 0.92rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .profile-stat {
+            padding: 0.95rem 1rem;
+            border-radius: 18px;
+            background: #f8faff;
+        }
+
+        .profile-stat span {
+            display: block;
+            font-size: 0.82rem;
+            color: #697386;
+            margin-bottom: 0.2rem;
+        }
+
+        .profile-stat strong {
+            font-size: 1.05rem;
+            color: #14213d;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .metric-card {
+            padding: 1.35rem;
+            border-radius: 22px;
+            background: white;
+            box-shadow: 0 12px 28px rgba(46, 62, 98, 0.08);
+            animation: panelRise 0.78s ease both;
+            transition: transform 0.28s ease, box-shadow 0.28s ease;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 34px rgba(46, 62, 98, 0.11);
+        }
+
+        .metric-card .metric-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-card h3 {
+            font-size: 2rem;
+            color: #111827;
+            margin-bottom: 0.15rem;
+        }
+
+        .metric-card .metric-trace {
+            color: #4f46e5;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.35fr 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .prediction-card-modern,
+        .records-card,
+        .timeline-card,
+        .assistant-panel {
+            padding: 1.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.3rem;
+            color: #111827;
+        }
+
+        .career-banner {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: 1.15rem 1.2rem;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #fff7ed, #fef3c7);
+            margin-bottom: 1.2rem;
+        }
+
+        .career-banner strong {
+            display: block;
+            font-size: 1.1rem;
+            color: #9a3412;
+        }
+
+        .career-banner p {
+            color: #7c2d12;
+            font-size: 0.95rem;
+            margin-top: 0.2rem;
+        }
+
+        .confidence-badge {
+            min-width: 96px;
+            text-align: center;
+            align-self: center;
+            padding: 0.85rem 0.95rem;
+            border-radius: 18px;
+            background: rgba(255,255,255,0.7);
+            color: #9a3412;
+            font-weight: 700;
+        }
+
+        .confidence-badge span {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        .score-list {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .score-row {
+            display: grid;
+            gap: 0.45rem;
+        }
+
+        .score-row-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95rem;
+            color: #374151;
+        }
+
+        .score-track {
+            height: 12px;
+            border-radius: 999px;
+            background: #e5e7eb;
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            border-radius: inherit;
+        }
+
+        .score-fill.placement { background: linear-gradient(135deg, #22c55e, #10b981); }
+        .score-fill.higher { background: linear-gradient(135deg, #3b82f6, #6366f1); }
+        .score-fill.entrepreneurship { background: linear-gradient(135deg, #f97316, #ef4444); }
+
+        .suggestion-grid,
+        .insight-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .suggestion-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .insight-card-modern {
+            padding: 1.1rem 1.15rem;
+        }
+
+        .insight-card-modern h3 {
+            font-size: 1rem;
+            color: #111827;
+            margin-bottom: 0.35rem;
+        }
+
+        .insight-card-modern p {
+            color: #5b6475;
+            font-size: 0.94rem;
+        }
+
+        .timeline-list {
+            display: grid;
+            gap: 0.85rem;
+        }
+
+        .timeline-item {
+            display: grid;
+            grid-template-columns: 40px 1fr;
+            gap: 0.8rem;
+            align-items: start;
+        }
+
+        .timeline-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            color: white;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .timeline-item h4 {
+            font-size: 0.98rem;
+            color: #111827;
+            margin-bottom: 0.15rem;
+        }
+
+        .timeline-item p {
+            color: #667085;
+            font-size: 0.92rem;
+        }
+
+        .records-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .record-card {
+            padding: 1.1rem 1.15rem;
+            border-radius: 20px;
+            background: #f8fafc;
+            border: 1px solid #edf2f7;
+            transition: transform 0.26s ease, box-shadow 0.26s ease, border-color 0.26s ease;
+        }
+
+        .record-card:hover {
+            transform: translateY(-3px);
+            border-color: #dbe3ef;
+            box-shadow: 0 16px 28px rgba(31, 41, 55, 0.07);
+        }
+
+        .record-card-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.55rem;
+        }
+
+        .record-card h3 {
+            font-size: 1rem;
+            color: #111827;
+            margin-bottom: 0.2rem;
+        }
+
+        .record-path {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.3rem 0.65rem;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #4338ca;
+            font-size: 0.82rem;
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+
+        .record-actions {
+            display: flex;
+            gap: 0.65rem;
+            flex-wrap: wrap;
+            margin-top: 0.9rem;
+        }
+
+        .action-icon-btn {
+            width: 40px;
+            height: 40px;
+            display: inline-grid;
+            place-items: center;
+            border-radius: 12px;
+            border: 1px solid #dbe3ef;
+            background: white;
+            color: #374151;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+            text-decoration: none;
+        }
+
+        .action-icon-btn:hover {
+            transform: translateY(-1px);
+            border-color: #667eea;
+            color: #4338ca;
+        }
+
+        .action-icon-btn.delete:hover {
+            border-color: #ef4444;
+            color: #b91c1c;
+        }
+
+        .assistant-fab {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #111827, #4338ca);
+            color: white;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 18px 40px rgba(17, 24, 39, 0.22);
+            cursor: pointer;
+            z-index: 1200;
+            font-size: 1.25rem;
+            animation: fabPulse 4.8s ease-in-out infinite;
+            transition: transform 0.26s ease, box-shadow 0.26s ease;
+        }
+
+        .assistant-fab:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 22px 44px rgba(17, 24, 39, 0.28);
+        }
+
+        .assistant-panel {
+            position: fixed;
+            right: 24px;
+            bottom: 100px;
+            width: min(520px, calc(100vw - 32px));
+            max-height: 78vh;
+            display: none;
+            flex-direction: column;
+            z-index: 1200;
+            padding: 1.1rem;
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 255, 0.98));
+            border: 1px solid rgba(210, 220, 255, 0.9);
+            box-shadow: 0 28px 70px rgba(35, 43, 78, 0.2);
+        }
+
+        .assistant-panel.open {
+            display: flex;
+        }
+
+        .assistant-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.95rem;
+            padding-bottom: 0.9rem;
+            border-bottom: 1px solid #e6ebf5;
+        }
+
+        .assistant-header h3 {
+            font-size: 1.08rem;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .assistant-feed {
+            display: grid;
+            gap: 0.75rem;
+            overflow: auto;
+            padding-right: 0.2rem;
+            margin-bottom: 1rem;
+            min-height: 180px;
+        }
+
+        .assistant-bubble {
+            padding: 1rem 1.05rem;
+            border-radius: 20px;
+            font-size: 0.94rem;
+            line-height: 1.65;
+            max-width: 94%;
+            position: relative;
+            box-shadow: 0 10px 26px rgba(17, 24, 39, 0.06);
+        }
+
+        .assistant-bubble.bot {
+            background: linear-gradient(180deg, #ffffff, #f7f9ff);
+            color: #0f172a;
+            border: 1px solid #e5eaf6;
+        }
+
+        .assistant-bubble.user {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            justify-self: end;
+        }
+
+        .assistant-bubble strong {
+            color: inherit;
+            font-weight: 700;
+        }
+
+        .assistant-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            margin-bottom: 0.65rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.01em;
+        }
+
+        .assistant-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 10px;
+            display: inline-grid;
+            place-items: center;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+
+        .assistant-bubble.bot .assistant-avatar {
+            background: linear-gradient(135deg, #111827, #4338ca);
+            color: white;
+        }
+
+        .assistant-bubble.user .assistant-avatar {
+            background: rgba(255, 255, 255, 0.18);
+            color: white;
+        }
+
+        .assistant-content {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .assistant-content p {
+            margin: 0;
+        }
+
+        .assistant-content h4 {
+            font-size: 0.95rem;
+            margin: 0;
+            color: inherit;
+        }
+
+        .assistant-content ul,
+        .assistant-content ol {
+            margin: 0;
+            padding-left: 1.15rem;
+            display: grid;
+            gap: 0.45rem;
+        }
+
+        .assistant-content li {
+            margin: 0;
+        }
+
+        .assistant-content code {
+            padding: 0.15rem 0.45rem;
+            border-radius: 999px;
+            background: rgba(99, 102, 241, 0.1);
+            color: #4338ca;
+            font-size: 0.82rem;
+        }
+
+        .assistant-content table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 16px;
+            background: rgba(248, 250, 252, 0.88);
+            border: 1px solid #e3e8f3;
+        }
+
+        .assistant-content th,
+        .assistant-content td {
+            text-align: left;
+            padding: 0.7rem 0.75rem;
+            border-bottom: 1px solid #e8edf7;
+            vertical-align: top;
+            font-size: 0.88rem;
+        }
+
+        .assistant-content th {
+            background: rgba(226, 232, 255, 0.75);
+            font-weight: 700;
+            color: #312e81;
+        }
+
+        .assistant-content tr:last-child td {
+            border-bottom: none;
+        }
+
+        .assistant-highlight {
+            padding: 0.9rem 0.95rem;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(59, 130, 246, 0.08));
+            border: 1px solid rgba(99, 102, 241, 0.14);
+        }
+
+        .assistant-typing {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .assistant-typing span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #6366f1;
+            opacity: 0.35;
+            animation: assistantPulse 1.1s infinite ease-in-out;
+        }
+
+        .assistant-typing span:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .assistant-typing span:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes assistantPulse {
+            0%, 80%, 100% { transform: translateY(0); opacity: 0.35; }
+            40% { transform: translateY(-3px); opacity: 1; }
+        }
+
+        .assistant-form {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 0.65rem;
+        }
+
+        .assistant-form textarea {
+            min-height: 54px;
+            max-height: 120px;
+            resize: vertical;
+            padding: 0.9rem 1rem;
+            border-radius: 16px;
+            border: 1px solid #dbe3ef;
+            outline: none;
+            font: inherit;
+        }
+
+        .assistant-form button {
+            border: none;
+            padding: 0 1rem;
+            border-radius: 16px;
+            background: #111827;
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .helper-note {
+            font-size: 0.82rem;
+            color: #6b7280;
+            margin-top: 0.6rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: #667085;
+        }
+
+        @keyframes panelRise {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes heroGlow {
+            0%, 100% {
+                box-shadow: 0 18px 40px rgba(46, 62, 98, 0.12);
+            }
+            50% {
+                box-shadow: 0 24px 52px rgba(77, 91, 185, 0.18);
+            }
+        }
+
+        @keyframes fabPulse {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-4px);
+            }
+        }
+
+        @media (max-width: 980px) {
+            .student-hero,
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .metric-grid,
+            .suggestion-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hero-card h1 {
+                font-size: 1.9rem;
+            }
+
+            .metric-grid,
+            .suggestion-grid,
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .assistant-panel {
+                right: 12px;
+                bottom: 88px;
+                width: calc(100vw - 24px);
+            }
+
+            .assistant-fab {
+                right: 12px;
+                bottom: 16px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Care-AI</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="student-dashboard.html" class="nav-link active">Home</a></li>
+                <li><a href="student-profile.html" class="nav-link">Profile</a></li>
+                <li><a href="student-login.html" class="nav-link" id="logoutLink">Logout</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content student-home">
+        <div class="container">
+            <section class="student-hero">
+                <div class="hero-card">
+                    <div class="hero-eyebrow">
+                        <i class="fas fa-sparkles"></i>
+                        <span>Student Command Center</span>
+                    </div>
+                    <h1 id="heroTitle">Welcome back, scholar.</h1>
+                    <p id="heroSubtitle">Track your latest career prediction, explore personalized next steps, and refine your profile whenever your progress changes.</p>
+                    <div class="hero-actions">
+                        <a href="student-profile.html" class="btn btn-primary">
+                            <i class="fas fa-pen-to-square"></i>
+                            New Assessment
+                        </a>
+                        <a href="student-profile.html" class="btn btn-secondary" id="editLatestLink">
+                            <i class="fas fa-sliders"></i>
+                            Edit Latest Details
+                        </a>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <div class="profile-pill">
+                        <i class="fas fa-user-check"></i>
+                        <span id="studentIdentity">Student profile</span>
+                    </div>
+                    <h2 style="font-size: 1.25rem; color: #111827;">Latest profile snapshot</h2>
+                    <div class="profile-grid" id="profileSnapshot">
+                        <div class="profile-stat"><span>Status</span><strong>Loading...</strong></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="metric-grid">
+                <div class="metric-card">
+                    <div class="metric-label">Assessments Completed</div>
+                    <h3 id="totalRecords">0</h3>
+                    <div class="metric-trace">Every saved version is tracked per student</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Average Placement Fit</div>
+                    <h3 id="avgPlacement">0%</h3>
+                    <div class="metric-trace">Career confidence trend</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Average Higher Studies Fit</div>
+                    <h3 id="avgHigherStudies">0%</h3>
+                    <div class="metric-trace">Academic progression signal</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Average CGPA</div>
+                    <h3 id="avgCgpa">0.0</h3>
+                    <div class="metric-trace">Based on your saved submissions</div>
+                </div>
+            </section>
+
+            <section class="dashboard-grid">
+                <div style="display: grid; gap: 1.5rem;">
+                    <div class="prediction-card-modern">
+                        <div class="section-header">
+                            <h2>Latest career direction</h2>
+                            <span class="profile-pill" id="lastUpdatedPill">
+                                <i class="fas fa-clock"></i>
+                                <span>No record yet</span>
+                            </span>
+                        </div>
+                        <div id="latestPredictionContent" class="empty-state">
+                            Save your first assessment to unlock personalized guidance.
+                        </div>
+                    </div>
+
+                    <div class="records-card">
+                        <div class="section-header">
+                            <h2>Saved prediction history</h2>
+                            <span class="muted">Multiple attempts supported for each student</span>
+                        </div>
+                        <div id="recordsList" class="records-list"></div>
+                    </div>
+                </div>
+
+                <div style="display: grid; gap: 1.5rem;">
+                    <div class="timeline-card">
+                        <div class="section-header">
+                            <h2>Suggested next steps</h2>
+                            <span class="muted">Built from your latest career path</span>
+                        </div>
+                        <div id="suggestedTimeline" class="timeline-list">
+                            <div class="empty-state">Your personalized next-step plan will appear here.</div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-card">
+                        <div class="section-header">
+                            <h2>Recommendations and focus areas</h2>
+                            <span class="muted">Actionable guidance</span>
+                        </div>
+                        <div id="recommendationCards" class="insight-grid">
+                            <div class="empty-state">No recommendation cards yet.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <button class="assistant-fab" id="assistantFab" title="Ask Career Copilot">
+        <i class="fas fa-robot"></i>
+    </button>
+
+    <section class="assistant-panel" id="assistantPanel">
+        <div class="assistant-header">
+            <div>
+                <h3><i class="fas fa-robot"></i> Career Copilot</h3>
+                <p class="muted">Ask about your latest prediction, next steps, or preparation plan.</p>
+            </div>
+            <button class="mini-link" id="closeAssistant">Close</button>
+        </div>
+        <div class="assistant-feed" id="assistantFeed">
+            <div class="assistant-bubble bot">Hi! I can explain your current career direction, suggest next actions, and help you decide what to improve next.</div>
+        </div>
+        <form class="assistant-form" id="assistantForm">
+            <textarea id="assistantInput" placeholder="Ask something like: why am I best suited for placement?"></textarea>
+            <button type="submit">Send</button>
+        </form>
+        <p class="helper-note">Career Copilot now uses the backend AI route when available and automatically falls back to local guidance if the service is offline.</p>
+    </section>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBoV-z8VnbVcsMRkLuwhsuOUd88aXVp7Hw",
+            authDomain: "careai-b88db.firebaseapp.com",
+            projectId: "careai-b88db",
+            storageBucket: "careai-b88db.firebasestorage.app",
+            messagingSenderId: "190414171649",
+            appId: "1:190414171649:web:6a2925fe1364697c5f5a00"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        let currentUser = null;
+        let latestRecord = null;
+        let allRecords = [];
+        let activeAssistantRecordId = null;
+        let typingBubble = null;
+
+        const careerPlans = {
+            placement: [
+                { icon: 'fa-laptop-code', title: 'Build interview readiness', text: 'Practice coding, aptitude, and communication rounds for your target companies.' },
+                { icon: 'fa-file-lines', title: 'Refine portfolio and resume', text: 'Show internships, mini-projects, and quantifiable outcomes that match placement roles.' },
+                { icon: 'fa-users-viewfinder', title: 'Simulate hiring process', text: 'Schedule mock interviews and group discussions this week to reduce friction.' }
+            ],
+            higher_studies: [
+                { icon: 'fa-book-open-reader', title: 'Strengthen academic depth', text: 'Prioritize research, writing, and subject mastery for admissions and statements of purpose.' },
+                { icon: 'fa-scroll', title: 'Prepare application assets', text: 'Draft SOP, shortlist programs, and line up recommendation sources early.' },
+                { icon: 'fa-microscope', title: 'Show intellectual curiosity', text: 'Document projects, publications, or guided research that prove readiness for advanced study.' }
+            ],
+            entrepreneurship: [
+                { icon: 'fa-lightbulb', title: 'Validate your idea', text: 'Talk to users, test assumptions, and build a lightweight prototype before scaling effort.' },
+                { icon: 'fa-chart-line', title: 'Learn business fundamentals', text: 'Improve pitch clarity, budgeting, and decision-making around risk and value.' },
+                { icon: 'fa-handshake', title: 'Grow your network', text: 'Reach out to mentors, startup communities, and peers who can challenge your thinking.' }
+            ],
+            needs_training: [
+                { icon: 'fa-seedling', title: 'Stabilize the basics', text: 'Bring CGPA, aptitude, and consistency to a safer baseline before specializing too early.' },
+                { icon: 'fa-dumbbell', title: 'Build core skill strength', text: 'Practice the foundational skills tied to your best-fit path so future predictions become stronger.' },
+                { icon: 'fa-calendar-check', title: 'Review progress regularly', text: 'Retake the profile after meaningful improvement in academics, projects, or confidence.' }
+            ]
+        };
+
+        auth.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'student-login.html';
+                return;
+            }
+
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            const role = userDoc.exists ? userDoc.data().role : '';
+
+            if (role !== 'student') {
+                await auth.signOut();
+                window.location.href = 'student-login.html';
+                return;
+            }
+
+            currentUser = user;
+            const userName = userDoc.exists ? (userDoc.data().name || user.email || 'Student') : (user.email || 'Student');
+            document.getElementById('heroTitle').textContent = `Welcome back, ${userName.split(' ')[0]}.`;
+            document.getElementById('studentIdentity').textContent = user.email || 'Student account';
+
+            db.collection('student_predictions')
+                .where('uid', '==', user.uid)
+                .onSnapshot((snapshot) => {
+                    allRecords = snapshot.docs
+                        .map((doc) => ({ id: doc.id, ...doc.data() }))
+                        .sort((left, right) => getTimestamp(right.createdAt) - getTimestamp(left.createdAt));
+                    latestRecord = allRecords[0] || null;
+                    renderDashboard(allRecords);
+                }, (error) => {
+                    console.error('Student dashboard query failed:', error);
+                    document.getElementById('recordsList').innerHTML =
+                        '<div class="empty-state">Unable to load saved predictions. Check console for the Firestore error.</div>';
+                });
+        });
+
+        document.getElementById('logoutLink').addEventListener('click', async (event) => {
+            event.preventDefault();
+            await auth.signOut();
+            window.location.href = 'student-login.html';
+        });
+
+        document.getElementById('assistantFab').addEventListener('click', () => {
+            document.getElementById('assistantPanel').classList.toggle('open');
+        });
+
+        document.getElementById('closeAssistant').addEventListener('click', () => {
+            document.getElementById('assistantPanel').classList.remove('open');
+        });
+
+        document.getElementById('assistantForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const input = document.getElementById('assistantInput');
+            const question = input.value.trim();
+            if (!question) return;
+
+            appendAssistantBubble(question, 'user');
+            input.value = '';
+            input.disabled = true;
+            const submitButton = event.currentTarget.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Thinking...';
+            typingBubble = appendAssistantTyping();
+
+            const contextRecord = getActiveAssistantRecord();
+            const answer = await getAssistantAnswer(question, contextRecord);
+            if (typingBubble) {
+                typingBubble.remove();
+                typingBubble = null;
+            }
+            appendAssistantBubble(answer, 'bot');
+
+            input.disabled = false;
+            submitButton.disabled = false;
+            submitButton.textContent = 'Send';
+            input.focus();
+        });
+
+        function renderDashboard(records) {
+            document.getElementById('totalRecords').textContent = records.length;
+            document.getElementById('avgPlacement').textContent = `${(average(records.map((record) => record.prediction?.placement_probability || 0)) * 100).toFixed(1)}%`;
+            document.getElementById('avgHigherStudies').textContent = `${(average(records.map((record) => record.prediction?.higher_studies_probability || 0)) * 100).toFixed(1)}%`;
+            document.getElementById('avgCgpa').textContent = average(records.map((record) => Number(record.cgpa) || 0)).toFixed(1);
+
+            renderProfileSnapshot(latestRecord);
+            renderLatestPrediction(latestRecord);
+            renderTimeline(latestRecord);
+            renderRecommendationCards(latestRecord);
+            renderHistory(records);
+        }
+
+        function renderProfileSnapshot(record) {
+            const snapshot = document.getElementById('profileSnapshot');
+            if (!record) {
+                snapshot.innerHTML = '<div class="profile-stat"><span>Status</span><strong>No profile saved yet</strong></div>';
+                return;
+            }
+
+            snapshot.innerHTML = `
+                <div class="profile-stat"><span>Name</span><strong>${record.student_name || 'Student'}</strong></div>
+                <div class="profile-stat"><span>Department</span><strong>${getDepartmentName(record.department)}</strong></div>
+                <div class="profile-stat"><span>CGPA</span><strong>${formatNumber(record.cgpa, 1)}</strong></div>
+                <div class="profile-stat"><span>Aptitude</span><strong>${formatNumber(record.aptitude_score, 0)}/100</strong></div>
+            `;
+
+            document.getElementById('editLatestLink').href = record ? `student-profile.html?edit=${encodeURIComponent(record.id)}` : 'student-profile.html';
+        }
+
+        function renderLatestPrediction(record) {
+            const container = document.getElementById('latestPredictionContent');
+            const pill = document.getElementById('lastUpdatedPill').querySelector('span');
+
+            if (!record) {
+                pill.textContent = 'No record yet';
+                container.innerHTML = 'Save your first assessment to unlock personalized guidance.';
+                return;
+            }
+
+            const prediction = record.prediction || {};
+            const mostLikelyPath = prediction.most_likely_path || 'undecided';
+            const primaryScore = getPrimaryScore(prediction, mostLikelyPath);
+            pill.textContent = `Updated ${formatRelativeTime(record.createdAt)}`;
+
+            container.innerHTML = `
+                <div class="career-banner">
+                    <div>
+                        <strong>${labelCareerPath(mostLikelyPath)}</strong>
+                        <p>${getCareerSummary(mostLikelyPath)}</p>
+                    </div>
+                    <div class="confidence-badge">
+                        ${primaryScore.toFixed(1)}%
+                        <span>Confidence</span>
+                    </div>
+                </div>
+                <div class="score-list">
+                    ${renderScoreRow('Placement readiness', prediction.placement_probability, 'placement', 'percent')}
+                    ${renderScoreRow('Higher studies readiness', prediction.higher_studies_probability, 'higher', 'percent')}
+                    ${renderScoreRow('Entrepreneurship readiness', prediction.entrepreneurship_score, 'entrepreneurship', 'entrepreneurship')}
+                </div>
+                <div class="suggestion-grid">
+                    ${getFocusCards(record).map((card) => `
+                        <div class="insight-card-modern">
+                            <h3>${card.title}</h3>
+                            <p>${card.text}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderTimeline(record) {
+            const container = document.getElementById('suggestedTimeline');
+            if (!record) {
+                container.innerHTML = '<div class="empty-state">Your personalized next-step plan will appear here.</div>';
+                return;
+            }
+
+            const steps = careerPlans[record.prediction?.most_likely_path] || careerPlans.needs_training;
+            container.innerHTML = steps.map((step) => `
+                <div class="timeline-item">
+                    <div class="timeline-icon"><i class="fas ${step.icon}"></i></div>
+                    <div>
+                        <h4>${step.title}</h4>
+                        <p>${step.text}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderRecommendationCards(record) {
+            const container = document.getElementById('recommendationCards');
+            if (!record || !record.prediction?.recommendations?.length) {
+                container.innerHTML = `
+                    <div class="insight-card-modern">
+                        <h3>Keep building consistency</h3>
+                        <p>Your latest record does not show urgent gaps. Continue improving projects, communication, and preparation depth.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = record.prediction.recommendations.slice(0, 4).map((recommendation) => `
+                <div class="insight-card-modern">
+                    <h3>${formatLabel(recommendation.skill)}</h3>
+                    <p>${recommendation.recommendation}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderHistory(records) {
+            const recordsList = document.getElementById('recordsList');
+            if (!records.length) {
+                recordsList.innerHTML = '<div class="empty-state">No predictions saved yet. Submit the student profile form first.</div>';
+                return;
+            }
+
+            recordsList.innerHTML = records.map((record, index) => `
+                <div class="record-card">
+                    <div class="record-card-top">
+                        <div>
+                            <h3>${record.student_name || 'Student'} ${index === 0 ? '<span class="muted">· latest</span>' : ''}</h3>
+                            <p class="muted">${formatRelativeTime(record.createdAt)} · CGPA ${formatNumber(record.cgpa, 1)}</p>
+                        </div>
+                        <span class="record-path"><i class="fas fa-compass"></i>${labelCareerPath(record.prediction?.most_likely_path || 'placement')}</span>
+                    </div>
+                    <p>Placement ${formatPercent(record.prediction?.placement_probability)} · Higher studies ${formatPercent(record.prediction?.higher_studies_probability)} · Entrepreneurship ${formatEntrepreneurshipPercent(record.prediction?.entrepreneurship_score)}</p>
+                    <div class="record-actions">
+                        <a class="action-icon-btn" href="student-profile.html?edit=${encodeURIComponent(record.id)}" title="Edit this version" aria-label="Edit this version">
+                            <i class="fas fa-pen-to-square"></i>
+                        </a>
+                        <button class="action-icon-btn" type="button" onclick="openAssistantForRecord('${record.id}')" title="Ask Copilot about this" aria-label="Ask Copilot about this">
+                            <i class="fas fa-robot"></i>
+                        </button>
+                        <button class="action-icon-btn delete" type="button" onclick="deleteRecord('${record.id}')" title="Delete this response" aria-label="Delete this response">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getFocusCards(record) {
+            const path = record.prediction?.most_likely_path || 'placement';
+            const cards = [
+                {
+                    title: 'Primary direction',
+                    text: `Your latest profile aligns most strongly with ${labelCareerPath(path).toLowerCase()}.`
+                },
+                {
+                    title: 'Best next move',
+                    text: getBestMove(path)
+                }
+            ];
+
+            if (record.prediction?.recommendations?.length) {
+                cards.push({
+                    title: 'Immediate improvement area',
+                    text: `${formatLabel(record.prediction.recommendations[0].skill)} needs attention next.`
+                });
+            } else {
+                cards.push({
+                    title: 'Momentum check',
+                    text: 'No severe skill gaps detected. Use this phase to deepen portfolio quality and consistency.'
+                });
+            }
+
+            cards.push({
+                title: 'Edit when you improve',
+                text: 'Update your profile after new internships, tests, projects, or skill growth to keep your guidance current.'
+            });
+
+            return cards;
+        }
+
+        function generateAssistantAnswer(question, record) {
+            const normalized = question.toLowerCase();
+
+            if (!record) {
+                return 'Start by saving your student profile once. Then I can explain your prediction, skill gaps, and next-step plan in detail.';
+            }
+
+            const path = record.prediction?.most_likely_path || 'placement';
+            const topRecommendation = record.prediction?.recommendations?.[0];
+
+            if (normalized.includes('why') || normalized.includes('best suited') || normalized.includes('career')) {
+                return `Your current profile leans toward ${labelCareerPath(path).toLowerCase()} because that option has the strongest score in your latest assessment. The best follow-up is: ${getBestMove(path)}`;
+            }
+
+            if (normalized.includes('improve') || normalized.includes('skill') || normalized.includes('gap')) {
+                if (topRecommendation) {
+                    return `Your strongest improvement signal right now is ${formatLabel(topRecommendation.skill)}. Recommendation: ${topRecommendation.recommendation}`;
+                }
+                return 'You do not have major gaps in the latest record. Focus on consistency: projects, communication, and regular mock preparation.';
+            }
+
+            if (normalized.includes('placement')) {
+                return `Placement readiness is currently ${formatPercent(record.prediction?.placement_probability)}. Prioritize interview practice, resume quality, and applied project depth.`;
+            }
+
+            if (normalized.includes('higher') || normalized.includes('masters') || normalized.includes('study')) {
+                return `Higher studies readiness is ${formatPercent(record.prediction?.higher_studies_probability)}. If this is your goal, strengthen research, writing, and academic documentation.`;
+            }
+
+            if (normalized.includes('entrepreneur') || normalized.includes('startup') || normalized.includes('business')) {
+                return `Entrepreneurship readiness is ${formatEntrepreneurshipPercent(record.prediction?.entrepreneurship_score)}. Build leadership, idea validation, and mentor/network exposure if you want to move in that direction.`;
+            }
+
+            return `Here is my short advice from your latest profile: stay focused on ${labelCareerPath(path).toLowerCase()}, work on ${topRecommendation ? formatLabel(topRecommendation.skill) : 'consistent execution'}, and update your profile whenever you have meaningful academic or skill progress.`;
+        }
+
+        async function getAssistantAnswer(question, record) {
+            if (!currentUser) {
+                return generateAssistantAnswer(question, record);
+            }
+
+            try {
+                const idToken = await currentUser.getIdToken();
+                const response = await fetch('http://127.0.0.1:5000/api/copilot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${idToken}`
+                    },
+                    body: JSON.stringify({
+                        question,
+                        latestRecord: serializeRecordForCopilot(record)
+                    })
+                });
+
+                const result = await response.json();
+                if (!response.ok || !result.success || !result.answer) {
+                    throw new Error(result.error || 'Unable to get an AI answer right now.');
+                }
+
+                return result.answer;
+            } catch (error) {
+                console.error('Copilot API failed, using local fallback:', error);
+                const fallback = generateAssistantAnswer(question, record);
+                const reason = error && error.message ? error.message : 'The AI service is unavailable right now.';
+                return `${fallback} (Local fallback used: ${reason})`;
+            }
+        }
+
+        function appendAssistantBubble(text, type) {
+            const bubble = document.createElement('div');
+            bubble.className = `assistant-bubble ${type}`;
+            bubble.innerHTML = buildAssistantBubbleMarkup(text, type);
+            const feed = document.getElementById('assistantFeed');
+            feed.appendChild(bubble);
+            feed.scrollTop = feed.scrollHeight;
+            document.getElementById('assistantPanel').classList.add('open');
+            return bubble;
+        }
+
+        function appendAssistantTyping() {
+            const bubble = document.createElement('div');
+            bubble.className = 'assistant-bubble bot';
+            bubble.innerHTML = `
+                <div class="assistant-meta">
+                    <span class="assistant-avatar"><i class="fas fa-robot"></i></span>
+                    <span>Career Copilot</span>
+                </div>
+                <div class="assistant-content">
+                    <div class="assistant-typing" aria-label="Career Copilot is typing">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            `;
+            const feed = document.getElementById('assistantFeed');
+            feed.appendChild(bubble);
+            feed.scrollTop = feed.scrollHeight;
+            document.getElementById('assistantPanel').classList.add('open');
+            return bubble;
+        }
+
+        function openAssistantForRecord(recordId) {
+            activeAssistantRecordId = recordId;
+            const record = allRecords.find((item) => item.id === recordId);
+            const summary = record
+                ? `Let's talk about your ${labelCareerPath(record.prediction?.most_likely_path || 'placement').toLowerCase()} track. Ask me about preparation, skill gaps, or next actions.`
+                : 'Ask me anything about your career path.';
+            appendAssistantBubble(summary, 'bot');
+        }
+
+        async function deleteRecord(recordId) {
+            const record = allRecords.find((item) => item.id === recordId);
+            if (!record) return;
+
+            const confirmed = window.confirm(`Delete the saved response from ${formatRelativeTime(record.createdAt)}? This cannot be undone.`);
+            if (!confirmed) return;
+
+            try {
+                await db.collection('student_predictions').doc(recordId).delete();
+
+                if (latestRecord && latestRecord.id === recordId) {
+                    const remainingRecords = allRecords.filter((item) => item.id !== recordId);
+                    const nextLatest = remainingRecords[0] || null;
+
+                    if (nextLatest) {
+                        await db.collection('students').doc(currentUser.uid).set({
+                            name: nextLatest.student_name || '',
+                            email: nextLatest.email || currentUser.email || '',
+                            cgpa: Number(nextLatest.cgpa) || 0,
+                            arrears_count: Number(nextLatest.arrears_count) || 0,
+                            aptitude_score: Number(nextLatest.aptitude_score) || 0,
+                            internship_duration: Number(nextLatest.internship_duration) || 0,
+                            skills: {
+                                programming: Number(nextLatest.skills?.programming) || 0,
+                                communication: Number(nextLatest.skills?.communication) || 0,
+                                problem_solving: Number(nextLatest.skills?.problem_solving) || 0
+                            },
+                            prediction: {
+                                career: mapCareer(
+                                    nextLatest.prediction?.most_likely_path || nextLatest.prediction?.career,
+                                    nextLatest.prediction || {}
+                                ),
+                                placement_probability: Number(nextLatest.prediction?.placement_probability) || 0,
+                                higher_studies_probability: Number(nextLatest.prediction?.higher_studies_probability) || 0
+                            },
+                            createdAt: nextLatest.createdAt || firebase.firestore.FieldValue.serverTimestamp(),
+                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        }, { merge: true });
+                    } else {
+                        await db.collection('students').doc(currentUser.uid).delete();
+                    }
+                }
+
+                appendAssistantBubble('That saved response has been deleted.', 'bot');
+            } catch (error) {
+                console.error(error);
+                const message = error && error.message ? error.message : 'Unable to delete this response right now.';
+                alert(message);
+            }
+        }
+
+        function renderScoreRow(label, value, tone, mode) {
+            const numericValue = Number(value) || 0;
+            const displayValue = mode === 'entrepreneurship'
+                ? formatEntrepreneurshipPercent(numericValue)
+                : formatPercent(numericValue);
+            const widthValue = mode === 'entrepreneurship'
+                ? Math.max(0, Math.min(100, numericValue * 10))
+                : Math.max(0, Math.min(100, numericValue * 100));
+
+            return `
+                <div class="score-row">
+                    <div class="score-row-top">
+                        <span>${label}</span>
+                        <strong>${displayValue}</strong>
+                    </div>
+                    <div class="score-track">
+                        <div class="score-fill ${tone}" style="width: ${widthValue}%"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function average(values) {
+            if (!values.length) return 0;
+            return values.reduce((sum, value) => sum + value, 0) / values.length;
+        }
+
+        function getTimestamp(value) {
+            if (!value) return 0;
+            if (typeof value.toMillis === 'function') return value.toMillis();
+            if (typeof value.seconds === 'number') return value.seconds * 1000;
+            return 0;
+        }
+
+        function buildAssistantBubbleMarkup(text, type) {
+            const meta = type === 'bot'
+                ? `
+                    <div class="assistant-meta">
+                        <span class="assistant-avatar"><i class="fas fa-robot"></i></span>
+                        <span>Career Copilot</span>
+                    </div>
+                `
+                : `
+                    <div class="assistant-meta">
+                        <span class="assistant-avatar"><i class="fas fa-user"></i></span>
+                        <span>You</span>
+                    </div>
+                `;
+
+            const content = type === 'bot'
+                ? formatAssistantMessage(text)
+                : `<div class="assistant-content"><p>${escapeHtml(text)}</p></div>`;
+
+            return `${meta}${content}`;
+        }
+
+        function formatAssistantMessage(text) {
+            const normalized = String(text || '').replace(/\r/g, '').trim();
+            if (!normalized) {
+                return '<div class="assistant-content"><p>I am here whenever you want to ask the next question.</p></div>';
+            }
+
+            const withTables = extractMarkdownTables(normalized);
+            const blocks = withTables.content.split(/\n\s*\n/).map((block) => block.trim()).filter(Boolean);
+            const renderedBlocks = blocks.map(renderAssistantBlock);
+            const tableBlocks = withTables.tables.map(renderAssistantTable);
+            return `<div class="assistant-content">${renderedBlocks.concat(tableBlocks).join('')}</div>`;
+        }
+
+        function renderAssistantBlock(block) {
+            if (/^\d+\.\s+/m.test(block)) {
+                const items = block.split(/\n/).map((line) => line.trim()).filter(Boolean);
+                const listItems = items
+                    .filter((line) => /^\d+\.\s+/.test(line))
+                    .map((line) => `<li>${formatInlineAssistantText(line.replace(/^\d+\.\s+/, ''))}</li>`)
+                    .join('');
+                if (listItems) return `<ol>${listItems}</ol>`;
+            }
+
+            if (/^[-*]\s+/m.test(block)) {
+                const items = block.split(/\n/).map((line) => line.trim()).filter(Boolean);
+                const listItems = items
+                    .filter((line) => /^[-*]\s+/.test(line))
+                    .map((line) => `<li>${formatInlineAssistantText(line.replace(/^[-*]\s+/, ''))}</li>`)
+                    .join('');
+                if (listItems) return `<ul>${listItems}</ul>`;
+            }
+
+            if (block.startsWith('|')) {
+                return '';
+            }
+
+            if (/^[A-Za-z][^:\n]{2,50}:$/.test(block)) {
+                return `<h4>${formatInlineAssistantText(block.replace(/:$/, ''))}</h4>`;
+            }
+
+            const formatted = formatInlineAssistantText(block);
+            if (/quick action plan|next steps|best move|summary/i.test(block)) {
+                return `<div class="assistant-highlight"><p>${formatted}</p></div>`;
+            }
+            return `<p>${formatted}</p>`;
+        }
+
+        function extractMarkdownTables(text) {
+            const lines = text.split('\n');
+            const tables = [];
+            const keptLines = [];
+
+            for (let index = 0; index < lines.length; index += 1) {
+                const line = lines[index].trim();
+                const nextLine = lines[index + 1] ? lines[index + 1].trim() : '';
+
+                if (line.startsWith('|') && /^\|?[\s:-]+\|[\s|:-]*$/.test(nextLine)) {
+                    const tableLines = [line];
+                    index += 2;
+                    while (index < lines.length && lines[index].trim().startsWith('|')) {
+                        tableLines.push(lines[index].trim());
+                        index += 1;
+                    }
+                    index -= 1;
+                    tables.push(tableLines);
+                    continue;
+                }
+
+                keptLines.push(lines[index]);
+            }
+
+            return {
+                content: keptLines.join('\n'),
+                tables
+            };
+        }
+
+        function renderAssistantTable(lines) {
+            if (!lines.length) return '';
+            const header = splitTableRow(lines[0]);
+            const rows = lines.slice(1).map(splitTableRow);
+
+            return `
+                <table>
+                    <thead>
+                        <tr>${header.map((cell) => `<th>${formatInlineAssistantText(cell)}</th>`).join('')}</tr>
+                    </thead>
+                    <tbody>
+                        ${rows.map((row) => `<tr>${row.map((cell) => `<td>${formatInlineAssistantText(cell)}</td>`).join('')}</tr>`).join('')}
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function splitTableRow(line) {
+            return line
+                .replace(/^\|/, '')
+                .replace(/\|$/, '')
+                .split('|')
+                .map((cell) => cell.trim());
+        }
+
+        function formatInlineAssistantText(text) {
+            return escapeHtml(text)
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>');
+        }
+
+        function escapeHtml(text) {
+            return String(text || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;')
+                .replace(/\n/g, '<br>');
+        }
+
+        function getActiveAssistantRecord() {
+            if (activeAssistantRecordId) {
+                const matchedRecord = allRecords.find((item) => item.id === activeAssistantRecordId);
+                if (matchedRecord) return matchedRecord;
+            }
+            return latestRecord;
+        }
+
+        function serializeRecordForCopilot(record) {
+            if (!record) return {};
+
+            return {
+                id: record.id || null,
+                uid: record.uid || currentUser?.uid || null,
+                student_name: record.student_name || record.name || '',
+                name: record.name || record.student_name || '',
+                email: record.email || currentUser?.email || '',
+                cgpa: Number(record.cgpa) || 0,
+                arrears_count: Number(record.arrears_count) || 0,
+                aptitude_score: Number(record.aptitude_score) || 0,
+                internship_duration: Number(record.internship_duration) || 0,
+                prediction: {
+                    career: record.prediction?.career || null,
+                    most_likely_path: record.prediction?.most_likely_path || null,
+                    placement_probability: Number(record.prediction?.placement_probability) || 0,
+                    higher_studies_probability: Number(record.prediction?.higher_studies_probability) || 0,
+                    entrepreneurship_score: Number(record.prediction?.entrepreneurship_score) || 0,
+                    recommendations: Array.isArray(record.prediction?.recommendations)
+                        ? record.prediction.recommendations.slice(0, 4)
+                        : []
+                }
+            };
+        }
+
+        function formatPercent(value) {
+            return `${((Number(value) || 0) * 100).toFixed(1)}%`;
+        }
+
+        function formatEntrepreneurshipPercent(value) {
+            return `${((Number(value) || 0) * 10).toFixed(1)}%`;
+        }
+
+        function formatNumber(value, digits) {
+            return Number(value || 0).toFixed(digits);
+        }
+
+        function formatLabel(value) {
+            return String(value || '').replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+        }
+
+        function getDepartmentName(value) {
+            return {
+                '1': 'Computer Science',
+                '2': 'Electronics',
+                '3': 'Mechanical',
+                '4': 'Civil'
+            }[String(value)] || 'Unknown';
+        }
+
+        function labelCareerPath(path) {
+            return {
+                placement: 'Placement',
+                higher_studies: 'Higher Studies',
+                entrepreneurship: 'Entrepreneurship',
+                needs_training: 'Needs Training'
+            }[path] || 'Career Path';
+        }
+
+        function getCareerSummary(path) {
+            return {
+                placement: 'Your current profile suggests industry readiness. Focus on interview practice, proof of skills, and hiring confidence.',
+                higher_studies: 'Your current profile favors academic progression. Strengthen research depth, documentation, and application quality.',
+                entrepreneurship: 'Your current profile suggests entrepreneurial potential. Work on validation, leadership, and execution discipline.',
+                needs_training: 'Your current profile needs stronger fundamentals first. Build consistency in academics, aptitude, and core skills before narrowing the path.'
+            }[path] || 'Your latest profile is building toward a meaningful next step.';
+        }
+
+        function getPrimaryScore(prediction, path) {
+            if (path === 'entrepreneurship') return (Number(prediction?.entrepreneurship_score) || 0) * 10;
+            if (path === 'higher_studies') return (Number(prediction?.higher_studies_probability) || 0) * 100;
+            return (Number(prediction?.placement_probability) || 0) * 100;
+        }
+
+        function getBestMove(path) {
+            return {
+                placement: 'Double down on placement preparation: resume polish, mock interviews, and project storytelling.',
+                higher_studies: 'Prepare SOPs, shortlist universities, and strengthen research-oriented outputs.',
+                entrepreneurship: 'Validate one problem deeply and start building a tiny but real prototype or solution.',
+                needs_training: 'Stabilize fundamentals first: improve aptitude, reduce arrears, and strengthen the most important core skills.'
+            }[path] || 'Keep improving your profile with focused, measurable effort.';
+        }
+
+        function mapCareer(path, predictions) {
+            if (path === 'placement' && Number(predictions?.placement_probability) >= 0.55) return 'placement';
+            if (path === 'higher_studies' && Number(predictions?.higher_studies_probability) >= 0.55) return 'higher_studies';
+            return 'needs_training';
+        }
+
+        function formatRelativeTime(timestamp) {
+            const value = getTimestamp(timestamp);
+            if (!value) return 'just now';
+
+            const diffMinutes = Math.round((Date.now() - value) / 60000);
+            if (diffMinutes < 1) return 'just now';
+            if (diffMinutes < 60) return `${diffMinutes} min ago`;
+            const diffHours = Math.round(diffMinutes / 60);
+            if (diffHours < 24) return `${diffHours} hr ago`;
+            const diffDays = Math.round(diffHours / 24);
+            return `${diffDays} day${diffDays === 1 ? '' : 's'} ago`;
+        }
+
+        window.openAssistantForRecord = openAssistantForRecord;
+        window.deleteRecord = deleteRecord;
+    </script>
+</body>
+</html>
