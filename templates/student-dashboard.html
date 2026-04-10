@@ -771,9 +771,9 @@
                 <span>Care-AI</span>
             </div>
             <ul class="nav-menu">
-                <li><a href="student-dashboard.html" class="nav-link active">Home</a></li>
-                <li><a href="student-profile.html" class="nav-link">Profile</a></li>
-                <li><a href="student-login.html" class="nav-link" id="logoutLink">Logout</a></li>
+                <li><a href="/student-dashboard" class="nav-link active">Home</a></li>
+                <li><a href="/student-profile" class="nav-link">Profile</a></li>
+                <li><a href="/student-login" class="nav-link" id="logoutLink">Logout</a></li>
             </ul>
         </div>
     </nav>
@@ -789,11 +789,11 @@
                     <h1 id="heroTitle">Welcome back, scholar.</h1>
                     <p id="heroSubtitle">Track your latest career prediction, explore personalized next steps, and refine your profile whenever your progress changes.</p>
                     <div class="hero-actions">
-                        <a href="student-profile.html" class="btn btn-primary">
+                        <a href="/student-profile" class="btn btn-primary">
                             <i class="fas fa-pen-to-square"></i>
                             New Assessment
                         </a>
-                        <a href="student-profile.html" class="btn btn-secondary" id="editLatestLink">
+                        <a href="/student-profile" class="btn btn-secondary" id="editLatestLink">
                             <i class="fas fa-sliders"></i>
                             Edit Latest Details
                         </a>
@@ -956,7 +956,7 @@
 
         auth.onAuthStateChanged(async (user) => {
             if (!user) {
-                window.location.href = 'student-login.html';
+                window.location.href = '/student-login';
                 return;
             }
 
@@ -965,7 +965,7 @@
 
             if (role !== 'student') {
                 await auth.signOut();
-                window.location.href = 'student-login.html';
+                window.location.href = '/student-login';
                 return;
             }
 
@@ -992,7 +992,7 @@
         document.getElementById('logoutLink').addEventListener('click', async (event) => {
             event.preventDefault();
             await auth.signOut();
-            window.location.href = 'student-login.html';
+            window.location.href = '/student-login';
         });
 
         document.getElementById('assistantFab').addEventListener('click', () => {
@@ -1058,7 +1058,7 @@
                 <div class="profile-stat"><span>Aptitude</span><strong>${formatNumber(record.aptitude_score, 0)}/100</strong></div>
             `;
 
-            document.getElementById('editLatestLink').href = record ? `student-profile.html?edit=${encodeURIComponent(record.id)}` : 'student-profile.html';
+            document.getElementById('editLatestLink').href = record ? `/student-profile?edit=${encodeURIComponent(record.id)}` : '/student-profile';
         }
 
         function renderLatestPrediction(record) {
@@ -1160,7 +1160,7 @@
                     </div>
                     <p>Placement ${formatPercent(record.prediction?.placement_probability)} · Higher studies ${formatPercent(record.prediction?.higher_studies_probability)} · Entrepreneurship ${formatEntrepreneurshipPercent(record.prediction?.entrepreneurship_score)}</p>
                     <div class="record-actions">
-                        <a class="action-icon-btn" href="student-profile.html?edit=${encodeURIComponent(record.id)}" title="Edit this version" aria-label="Edit this version">
+                        <a class="action-icon-btn" href="/student-profile?edit=${encodeURIComponent(record.id)}" title="Edit this version" aria-label="Edit this version">
                             <i class="fas fa-pen-to-square"></i>
                         </a>
                         <button class="action-icon-btn" type="button" onclick="openAssistantForRecord('${record.id}')" title="Ask Copilot about this" aria-label="Ask Copilot about this">

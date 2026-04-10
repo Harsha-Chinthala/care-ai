@@ -44,7 +44,7 @@ const elements = {
 elements.logoutLink.addEventListener("click", async (event) => {
     event.preventDefault();
     await signOut(auth);
-    window.location.href = "admin-login.html";
+    window.location.href = "/admin-login";
 });
 
 elements.segmentFilter.addEventListener("change", (event) => {
@@ -59,7 +59,7 @@ elements.predictionFilter.addEventListener("change", (event) => {
 
 onAuthStateChanged(auth, async (user) => {
     if (!user) {
-        window.location.href = "admin-login.html";
+        window.location.href = "/admin-login";
         return;
     }
 
@@ -70,7 +70,7 @@ onAuthStateChanged(auth, async (user) => {
 
         if (role !== "admin") {
             await signOut(auth);
-            window.location.href = "admin-login.html";
+            window.location.href = "/admin-login";
             return;
         }
 

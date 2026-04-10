@@ -150,8 +150,8 @@
         <div id="loginMsg" class="error"></div>
 
         <div class="links">
-            <a href="student-register.html">Create student account</a>
-            <a href="admin-login.html">Admin login</a>
+            <a href="/student-register">Create student account</a>
+            <a href="/admin-login">Admin login</a>
         </div>
     </div>
 
@@ -225,7 +225,7 @@
                 loginMsg.className = 'success';
                 loginMsg.textContent = 'Login successful. Redirecting...';
                 setTimeout(() => {
-                    window.location.href = 'student-dashboard.html';
+                    window.location.href = '/student-dashboard';
                 }, 500);
             } catch (error) {
                 loginMsg.className = 'error';

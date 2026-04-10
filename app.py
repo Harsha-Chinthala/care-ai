@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template, redirect, url_for
 from flask_cors import CORS
 import firebase_admin
 from firebase_admin import auth, credentials
@@ -178,6 +178,41 @@ def verify_firebase_user():
         return decoded_token, None
     except Exception:
         return None, ('Invalid token', 401)
+
+
+@app.get('/')
+def index():
+    return redirect(url_for('student_login_page'))
+
+
+@app.get('/student-login')
+def student_login_page():
+    return render_template('student-login.html')
+
+
+@app.get('/student-register')
+def student_register_page():
+    return render_template('student-register.html')
+
+
+@app.get('/student-profile')
+def student_profile_page():
+    return render_template('student-profile.html')
+
+
+@app.get('/student-dashboard')
+def student_dashboard_page():
+    return render_template('student-dashboard.html')
+
+
+@app.get('/admin-login')
+def admin_login_page():
+    return render_template('admin-login.html')
+
+
+@app.get('/admin-dashboard')
+def admin_dashboard_page():
+    return render_template('admin-dashboard.html')
 
 
 @app.post('/api/predict')
