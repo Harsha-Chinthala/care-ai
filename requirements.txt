@@ -11,3 +11,4 @@ joblib
 python-dotenv
 pyyaml
 openai
+gunicorn

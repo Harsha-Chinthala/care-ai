@@ -1,10 +1,11 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for
-from flask_cors import CORS
-import firebase_admin
-from firebase_admin import auth, credentials
-import pandas as pd
+import json
 import os
 import sys
+import pandas as pd
+import firebase_admin
+from firebase_admin import auth, credentials
+from flask import Flask, request, jsonify, render_template, redirect, url_for
+from flask_cors import CORS
 from dotenv import load_dotenv
 
 try:
@@ -24,7 +25,6 @@ from src.ml_models.gap_analyzer import GapAnalyzer
 from src.dashboard.student_profiler import StudentProfiler
 
 app = Flask(__name__)
-CORS(app)
 
 load_dotenv()
 
@@ -35,6 +35,21 @@ predictor = None
 gap_analyzer = None
 profiler = None
 openai_client = None
+system_initialized = False
+
+
+def get_cors_origins():
+    raw_origins = os.getenv('CORS_ORIGINS', '').strip()
+    if not raw_origins:
+        frontend_origin = os.getenv('FRONTEND_ORIGIN', '').strip()
+        if frontend_origin:
+            raw_origins = frontend_origin
+
+    origins = [origin.strip() for origin in raw_origins.split(',') if origin.strip()]
+    return origins or '*'
+
+
+CORS(app, resources={r"/api/*": {"origins": get_cors_origins()}})
 
 
 def get_openai_client():
@@ -96,22 +111,34 @@ def build_copilot_prompt(question, record, user_email):
 
 def initialize_firebase():
     service_account_path = os.getenv('FIREBASE_SERVICE_ACCOUNT', 'firebase-service-account.json')
+    service_account_json = os.getenv('FIREBASE_SERVICE_ACCOUNT_JSON', '').strip()
 
     if firebase_admin._apps:
         return True
 
-    if not os.path.exists(service_account_path):
-        print(f"Firebase service account file not found: {service_account_path}")
-        print("Set FIREBASE_SERVICE_ACCOUNT or place firebase-service-account.json in the project root.")
-        return False
+    if service_account_json:
+        try:
+            credential_info = json.loads(service_account_json)
+        except json.JSONDecodeError:
+            print("FIREBASE_SERVICE_ACCOUNT_JSON is not valid JSON.")
+            return False
+        credential = credentials.Certificate(credential_info)
+    else:
+        if not os.path.exists(service_account_path):
+            print(f"Firebase service account file not found: {service_account_path}")
+            print("Set FIREBASE_SERVICE_ACCOUNT_JSON, set FIREBASE_SERVICE_ACCOUNT, or place firebase-service-account.json in the project root.")
+            return False
+        credential = credentials.Certificate(service_account_path)
 
-    credential = credentials.Certificate(service_account_path)
     firebase_admin.initialize_app(credential)
     return True
 
 
 def initialize_system():
-    global collector, cleaner, trainer, predictor, gap_analyzer, profiler
+    global collector, cleaner, trainer, predictor, gap_analyzer, profiler, system_initialized
+
+    if system_initialized:
+        return
 
     print("Initializing Care-AI API...")
 
@@ -161,7 +188,18 @@ def initialize_system():
 
     gap_analyzer = GapAnalyzer(skill_requirements)
     profiler = StudentProfiler(predictor, gap_analyzer)
+    system_initialized = True
     print("Care-AI API initialized successfully.")
+
+
+def initialize_application():
+    firebase_ready = initialize_firebase()
+    initialize_system()
+    if not firebase_ready:
+        print("Starting without Firebase Admin. Authenticated API calls will fail until credentials are configured.")
+
+
+initialize_application()
 
 
 def verify_firebase_user():
@@ -361,8 +399,9 @@ def health_check():
 
 
 if __name__ == '__main__':
-    firebase_ready = initialize_firebase()
-    initialize_system()
-    if not firebase_ready:
-        print("Starting without Firebase Admin. Authenticated API calls will fail until credentials are configured.")
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=int(os.getenv('PORT', '5000')))
+
+
+#cd"/Users/harshachinthala/Documents/Major Project/projects"
+# .venv/bin/python app.py
+

@@ -1,0 +1,56 @@
+{
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      ".firebaserc",
+      "**/.*",
+      "**/node_modules/**",
+      "app.py",
+      "requirements.txt",
+      "Dockerfile",
+      "README.md",
+      "src/**",
+      "data/**",
+      "config.yaml",
+      "firebase-service-account.json"
+    ],
+    "rewrites": [
+      {
+        "source": "/api/**",
+        "run": {
+          "serviceId": "care-ai-api",
+          "region": "asia-south1"
+        }
+      },
+      {
+        "source": "/",
+        "destination": "/templates/student-login.html"
+      },
+      {
+        "source": "/student-login",
+        "destination": "/templates/student-login.html"
+      },
+      {
+        "source": "/student-register",
+        "destination": "/templates/student-register.html"
+      },
+      {
+        "source": "/student-profile",
+        "destination": "/templates/student-profile.html"
+      },
+      {
+        "source": "/student-dashboard",
+        "destination": "/templates/student-dashboard.html"
+      },
+      {
+        "source": "/admin-login",
+        "destination": "/templates/admin-login.html"
+      },
+      {
+        "source": "/admin-dashboard",
+        "destination": "/templates/admin-dashboard.html"
+      }
+    ]
+  }
+}

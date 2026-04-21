@@ -433,6 +433,8 @@ GROQ_MODEL=openai/gpt-oss-20b
 
 Do not commit secrets.
 
+For local static preview on `http://127.0.0.1:3000`, the student pages automatically call the Flask API on `http://127.0.0.1:5000`.
+
 ## How to Run the Project
 
 ### Start the backend
@@ -517,6 +519,216 @@ Use rules that support:
 - add unit tests for predictor and profiler logic
 - add production deployment setup for Flask and static hosting
 - add model versioning and analytics audit trail
+
+## Recruiter-Friendly Deployment
+
+The strongest public setup for this project is:
+
+- `Firebase Hosting` for the public website
+- `Cloud Run` for the Flask backend
+- `Firebase Auth` and `Firestore` for authentication and live data
+
+This gives you:
+
+- a fast public website
+- HTTPS automatically
+- a clean architecture you can explain in interviews
+- a professional custom domain later if you want one
+
+### Architecture
+
+```text
+Recruiter Browser
+      |
+      v
+Firebase Hosting
+  - /student-login
+  - /student-register
+  - /student-profile
+  - /student-dashboard
+  - /admin-login
+  - /admin-dashboard
+      |
+      v
+Hosting rewrite for /api/*
+      |
+      v
+Cloud Run Flask API
+  - /api/predict
+  - /api/copilot
+  - /health
+      |
+      +--> Firebase Admin
+      +--> Groq API
+      +--> CSV-trained ML models
+```
+
+### What Was Added For Deployment
+
+- `Dockerfile` for Cloud Run
+- `gunicorn` in `requirements.txt`
+- support for `FIREBASE_SERVICE_ACCOUNT_JSON` in cloud environments
+- configurable CORS using `FRONTEND_ORIGIN` or `CORS_ORIGINS`
+- `firebase.json` with Hosting rewrites to Cloud Run
+- `static/js/app-config.js` so local development and hosted deployment both work
+
+### Before You Start
+
+You need:
+
+1. a GitHub account
+2. a Firebase project
+3. a Google Cloud project linked to the same Firebase project
+4. billing enabled on Google Cloud because Cloud Run requires it
+5. the Firebase CLI installed
+6. the Google Cloud CLI installed
+
+### Step 1. Put The Project On GitHub
+
+Create a new repository on GitHub, then push this project.
+
+Example:
+
+```bash
+git init
+git add .
+git commit -m "Prepare Care-AI for deployment"
+git branch -M main
+git remote add origin https://github.com/YOUR_USERNAME/care-ai.git
+git push -u origin main
+```
+
+### Step 2. Create A Production Service Account
+
+In Firebase or Google Cloud:
+
+1. open `Project settings`
+2. open `Service accounts`
+3. generate a new private key
+4. keep the JSON file safe
+
+For Cloud Run, copy the full JSON content because the backend now supports:
+
+- `FIREBASE_SERVICE_ACCOUNT_JSON`
+
+That is easier than uploading a file to the server.
+
+### Step 3. Set Up Cloud Run
+
+Build and deploy from this project folder:
+
+```bash
+gcloud auth login
+gcloud config set project YOUR_PROJECT_ID
+gcloud run deploy care-ai-api \
+  --source . \
+  --region asia-south1 \
+  --allow-unauthenticated
+```
+
+When prompted for environment variables, add:
+
+- `GROQ_API_KEY`
+- `GROQ_BASE_URL=https://api.groq.com/openai/v1`
+- `GROQ_MODEL=openai/gpt-oss-20b`
+- `FIREBASE_SERVICE_ACCOUNT_JSON=<paste the full JSON on one line>`
+- `FRONTEND_ORIGIN=https://YOUR_PROJECT_ID.web.app`
+- `CORS_ORIGINS=https://YOUR_PROJECT_ID.web.app,https://YOUR_PROJECT_ID.firebaseapp.com`
+
+After deploy, test:
+
+```text
+https://YOUR_CLOUD_RUN_URL/health
+```
+
+### Step 4. Set Up Firebase Hosting
+
+Login and initialize Hosting:
+
+```bash
+firebase login
+firebase use YOUR_PROJECT_ID
+firebase init hosting
+```
+
+Use these answers:
+
+- public directory: `.`
+- single-page app: `No`
+- overwrite files: `No`
+
+This repository already includes a `firebase.json` configured to:
+
+- serve the HTML pages from `templates/`
+- rewrite `/api/**` to the Cloud Run service `care-ai-api`
+- expose cleaner public paths like `/student-login`
+
+Deploy Hosting:
+
+```bash
+firebase deploy --only hosting
+```
+
+### Step 5. Add Authorized Domains In Firebase Auth
+
+In Firebase Console:
+
+1. go to `Authentication`
+2. open `Settings`
+3. add these domains:
+   - `YOUR_PROJECT_ID.web.app`
+   - `YOUR_PROJECT_ID.firebaseapp.com`
+4. later add your custom domain too
+
+### Step 6. Check Firestore Rules
+
+Before you show this publicly, make sure Firestore rules only allow:
+
+- students to read and write their own data
+- admins to read dashboard collections
+
+If Firestore rules are too open, recruiters could accidentally see insecure data handling.
+
+### Step 7. Optional Custom Domain
+
+For a stronger recruiter impression, connect a custom domain in Firebase Hosting:
+
+- `careai-demo.in`
+- `careaiapp.tech`
+- `yourname-care-ai.dev`
+
+After connecting the domain:
+
+1. add it in Firebase Hosting
+2. update Firebase Auth authorized domains
+3. update Cloud Run env vars:
+   - `FRONTEND_ORIGIN=https://your-domain.com`
+   - `CORS_ORIGINS=https://your-domain.com,https://YOUR_PROJECT_ID.web.app`
+
+### What To Tell Recruiters
+
+Use a short explanation like this:
+
+`Care-AI is deployed with Firebase Hosting for the public frontend and Google Cloud Run for the Flask ML API. Authentication and real-time student/admin data are handled with Firebase Auth and Firestore, while the backend verifies Firebase tokens and serves prediction and AI guidance APIs securely.`
+
+### Demo Checklist Before Sharing
+
+1. open the public URL in an incognito window
+2. test student registration and login
+3. submit a profile and verify prediction works
+4. open student dashboard and test Copilot
+5. log in as admin and verify dashboard data loads
+6. confirm `/health` is healthy
+7. check browser console for errors
+8. verify no localhost URLs remain in the UI
+
+### Important Production Note
+
+The backend currently retrains ML models during startup. That is okay for a project demo, but not ideal for larger production traffic because startup becomes slower. A future improvement is:
+
+- train once offline
+- save models with `joblib`
+- load them on startup instead of retraining
 
 ## Authoring Notes
 
