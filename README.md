@@ -730,6 +730,65 @@ The backend currently retrains ML models during startup. That is okay for a proj
 - save models with `joblib`
 - load them on startup instead of retraining
 
+## Free Deployment With Render
+
+If you want a fully free recruiter demo without enabling Google Cloud billing, use:
+
+- `Render` to host the full Flask app
+- `Firebase Auth` and `Firestore` exactly as they are now
+- the free Render subdomain such as `https://care-ai.onrender.com`
+
+This is the simplest path because the Flask app already serves the pages and APIs together.
+
+### Why This Path
+
+- no Google Cloud billing setup required
+- one deployment instead of separate frontend and backend deployments
+- still public and professional enough for recruiter sharing
+- works well for demo traffic
+
+### Render Files In This Repo
+
+- `render.yaml` for one-click Render settings
+- `requirements.txt` includes `gunicorn`
+- backend supports `FIREBASE_SERVICE_ACCOUNT_JSON` for cloud secrets
+
+### Render Setup
+
+In Render, create a `Web Service` from this GitHub repo and use:
+
+- Runtime: `Python 3`
+- Build Command: `pip install -r requirements.txt`
+- Start Command: `gunicorn app:app --bind 0.0.0.0:$PORT`
+- Plan: `Free`
+
+### Render Environment Variables
+
+Add these in the Render dashboard:
+
+- `GROQ_API_KEY`
+- `GROQ_BASE_URL=https://api.groq.com/openai/v1`
+- `GROQ_MODEL=openai/gpt-oss-20b`
+- `FIREBASE_SERVICE_ACCOUNT_JSON=<paste the Firebase service account JSON as one line>`
+
+### Firebase Auth Change For Render
+
+After Render gives you a public URL, add that domain in Firebase Authentication:
+
+1. open Firebase Console
+2. Authentication
+3. Settings
+4. Authorized domains
+5. add your Render domain, for example `care-ai.onrender.com`
+
+### Important Limitation
+
+Render free instances can sleep after inactivity, so the first request may be slow. That is normal for a free demo and acceptable for recruiter sharing if you mention it only when needed.
+
+### Free Custom Domain Note
+
+A custom domain is not free. If you want the deployment itself to stay fully free, use the free Render domain first. If you later decide to spend a little for polish, you can buy a custom domain and connect it to Render.
+
 ## Authoring Notes
 
 This README reflects the current implemented project state in this repository, including:
